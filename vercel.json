@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "installCommand": "cd frontend && npm ci",
-  "buildCommand": "cd frontend && npm run build",
+  "installCommand": "if [ -f package.json ]; then npm ci; else cd frontend && npm ci; fi",
+  "buildCommand": "if [ -f package.json ]; then npm run build; else cd frontend && npm run build; fi",
   "framework": "nextjs"
 }
