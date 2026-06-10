@@ -1,0 +1,83 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: physician_consult
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  backend:
+    build:
+      context: ./backend
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    env_file:
+      - ./backend/.env.example
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432/physician_consult
+      REDIS_URL: redis://redis:6379/0
+      DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1,backend
+      BACKEND_BASE_URL: http://localhost:8000
+      FRONTEND_BASE_URL: http://localhost:3000
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+
+  celery:
+    build:
+      context: ./backend
+    command: celery -A config worker --loglevel=info
+    env_file:
+      - ./backend/.env.example
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432/physician_consult
+      REDIS_URL: redis://redis:6379/0
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - backend
+      - redis
+
+  celery-beat:
+    build:
+      context: ./backend
+    command: celery -A config beat --loglevel=info
+    env_file:
+      - ./backend/.env.example
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432/physician_consult
+      REDIS_URL: redis://redis:6379/0
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - backend
+      - redis
+
+  frontend:
+    build:
+      context: ./frontend
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:8000/api
+      NEXT_PUBLIC_SITE_URL: http://localhost:3000
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:

@@ -1,0 +1,307 @@
+<!DOCTYPE html><html class="light" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Schedule Consultation | MedConsult Pro</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed": "#1a1c1c",
+                        "surface-bright": "#f9f9f9",
+                        "primary": "#00501e",
+                        "on-secondary-fixed": "#410003",
+                        "outline-variant": "#bfcabb",
+                        "on-secondary": "#ffffff",
+                        "surface-container-highest": "#e2e2e2",
+                        "on-secondary-container": "#fffbff",
+                        "on-primary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "surface": "#f9f9f9",
+                        "inverse-on-surface": "#f1f1f1",
+                        "primary-container": "#006b2b",
+                        "on-primary-container": "#8ee999",
+                        "on-secondary-fixed-variant": "#93000e",
+                        "surface-variant": "#e2e2e2",
+                        "primary-fixed-dim": "#80da8c",
+                        "on-tertiary-fixed-variant": "#464747",
+                        "surface-container-low": "#f3f3f3",
+                        "on-background": "#1b1b1b",
+                        "primary-fixed": "#9cf7a6",
+                        "on-tertiary": "#ffffff",
+                        "outline": "#6f7a6e",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-dim": "#dadada",
+                        "on-primary-fixed-variant": "#005320",
+                        "secondary": "#bb0015",
+                        "inverse-primary": "#80da8c",
+                        "tertiary-fixed": "#e3e2e2",
+                        "on-surface-variant": "#3f493e",
+                        "tertiary-container": "#5b5c5c",
+                        "inverse-surface": "#303030",
+                        "tertiary": "#444445",
+                        "on-surface": "#1b1b1b",
+                        "tertiary-fixed-dim": "#c7c6c6",
+                        "on-primary-fixed": "#002108",
+                        "surface-container-high": "#e8e8e8",
+                        "secondary-fixed": "#ffdad6",
+                        "background": "#f9f9f9",
+                        "secondary-container": "#e32027",
+                        "on-error": "#ffffff",
+                        "surface-tint": "#056d2d",
+                        "on-tertiary-container": "#d5d4d4",
+                        "surface-container": "#eeeeee",
+                        "secondary-fixed-dim": "#ffb4ac",
+                        "error": "#ba1a1a",
+                        "error-container": "#ffdad6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "margin-desktop": "48px",
+                        "container-max": "1280px",
+                        "unit": "4px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "label-bold": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-xl": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "headline-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-bold": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-xl": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "display-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md min-h-screen">
+<!-- TopAppBar -->
+<header class="bg-surface border-b border-outline-variant flex justify-between items-center px-[24px] py-[16px] w-full sticky top-0 z-50">
+<div class="flex items-center gap-4 cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined text-primary text-headline-md">medical_services</span>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">MedConsult Pro</h1>
+</div>
+<div class="flex items-center gap-4">
+
+<span class="material-symbols-outlined text-primary text-headline-md cursor-pointer">account_circle</span>
+</div>
+</header>
+<main class="max-w-[1280px] mx-auto px-[16px] md:px-[48px] py-[24px] mb-24">
+<!-- Breadcrumb & Title -->
+<div class="mb-6">
+
+<h2 class="font-display-lg text-display-lg text-on-surface">Book Consultation</h2>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+<!-- Left Column: Scheduler & Form -->
+<div class="lg:col-span-8 flex flex-col gap-6">
+<!-- Physician Summary Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 flex items-center gap-4 shadow-sm">
+<img alt="Dr. Julian Thorne" class="w-16 h-16 rounded-full object-cover bg-surface-variant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBH6k3AzoM2YPKwx1dfnl7tCxsdiLYg4xNtxPkv7Jx2yg0vdGw7w3Sj7ypoL-gvMrbrR-NcHV_T8MGtwEoZDElRi3vQYvECPh3O2zYIqKgB2VPcJ5qcTKKTezV6k20VSr1bbwBcf00YTodN2viXG6QD0d1TbpPgyBCTuvzGJCqHbTovXnY17OPia8riHFj_zYnV2mt_l0NyyVJGFD9P_BCDD_zElXvSDul5E5YgUP_t1pQaNHbVn8NQ6rQC4zJ8nsyvXMWQnVgUnQ">
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<div>
+<h3 class="font-headline-sm text-headline-sm">Dr. Julian Thorne</h3>
+<p class="text-primary font-label-md text-label-md">Cardiology Specialist</p>
+</div>
+
+</div>
+</div>
+</div>
+<!-- Bento Grid for Scheduling -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Calendar Picker -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 shadow-sm">
+<div class="flex justify-between items-center mb-4">
+<h4 class="font-headline-sm text-headline-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">calendar_today</span>
+                            Select Date
+                        </h4>
+<div class="flex gap-1">
+<button class="material-symbols-outlined p-1 hover:bg-surface-container-low rounded-full">chevron_left</button>
+<button class="material-symbols-outlined p-1 hover:bg-surface-container-low rounded-full">chevron_right</button>
+</div>
+</div>
+<div class="grid grid-cols-7 gap-1 text-center">
+<span class="text-on-surface-variant font-label-md text-label-md">S</span>
+<span class="text-on-surface-variant font-label-md text-label-md">M</span>
+<span class="text-on-surface-variant font-label-md text-label-md">T</span>
+<span class="text-on-surface-variant font-label-md text-label-md">W</span>
+<span class="text-on-surface-variant font-label-md text-label-md">T</span>
+<span class="text-on-surface-variant font-label-md text-label-md">F</span>
+<span class="text-on-surface-variant font-label-md text-label-md">S</span>
+<!-- Placeholder dates -->
+<div class="p-2 text-on-surface-variant opacity-30 font-body-md">28</div>
+<div class="p-2 text-on-surface-variant opacity-30 font-body-md">29</div>
+<div class="p-2 text-on-surface-variant opacity-30 font-body-md">30</div>
+<div class="p-2 font-body-md hover:bg-surface-container transition-colors rounded-lg cursor-pointer">1</div>
+<div class="p-2 font-body-md hover:bg-surface-container transition-colors rounded-lg cursor-pointer">2</div>
+<div class="p-2 font-body-md hover:bg-surface-container transition-colors rounded-lg cursor-pointer">3</div>
+<div class="p-2 font-body-md hover:bg-surface-container transition-colors rounded-lg cursor-pointer">4</div>
+<div class="p-2 font-body-md hover:bg-surface-container transition-colors rounded-lg cursor-pointer">5</div>
+<div class="p-2 font-body-md hover:bg-surface-container transition-colors rounded-lg cursor-pointer">6</div>
+<div class="p-2 font-body-md hover:bg-surface-container transition-colors rounded-lg cursor-pointer">7</div>
+<div class="p-2 font-body-md bg-primary text-on-primary rounded-lg font-bold">8</div>
+<div class="p-2 font-body-md hover:bg-surface-container transition-colors rounded-lg cursor-pointer">9</div>
+<div class="p-2 font-body-md hover:bg-surface-container transition-colors rounded-lg cursor-pointer">10</div>
+<div class="p-2 font-body-md hover:bg-surface-container transition-colors rounded-lg cursor-pointer">11</div>
+</div>
+</div>
+<!-- Time Slot Selector -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 shadow-sm">
+<h4 class="font-headline-sm text-headline-sm flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary">schedule</span>
+                        Available Time
+                    </h4>
+<div class="grid grid-cols-2 gap-2">
+<button class="py-2 px-3 border border-outline-variant rounded-lg font-body-md hover:bg-primary-container hover:text-on-primary-container transition-all">09:00 AM</button>
+<button class="py-2 px-3 border border-outline-variant rounded-lg font-body-md hover:bg-primary-container hover:text-on-primary-container transition-all">10:30 AM</button>
+<button class="py-2 px-3 bg-primary-container text-on-primary-container border-primary rounded-lg font-bold border-2 shadow-sm">11:15 AM</button>
+<button class="py-2 px-3 border border-outline-variant rounded-lg font-body-md hover:bg-primary-container hover:text-on-primary-container transition-all">01:00 PM</button>
+<button class="py-2 px-3 border border-outline-variant rounded-lg font-body-md hover:bg-primary-container hover:text-on-primary-container transition-all">02:30 PM</button>
+<button class="py-2 px-3 bg-surface-variant text-on-surface-variant rounded-lg font-body-md cursor-not-allowed opacity-50" disabled="">04:00 PM</button>
+</div>
+</div>
+</div>
+<!-- Case Details Form -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 shadow-sm">
+<h4 class="font-headline-sm text-headline-sm flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary">clinical_notes</span>
+                    Consultation Details
+                </h4>
+<div class="space-y-4">
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant mb-1">Chief Complaint / Subject</label>
+<input class="w-full bg-surface border border-outline-variant rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all" placeholder="e.g. Follow-up on post-operative care" type="text">
+</div>
+<div>
+<label class="block font-label-md text-label-md text-on-surface-variant mb-1">Detailed Description</label>
+<textarea class="w-full bg-surface border border-outline-variant rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all" placeholder="Briefly describe the clinical symptoms or the purpose of this consult..." rows="4"></textarea>
+</div>
+<div class="flex items-center gap-4">
+<button class="flex items-center gap-2 text-primary font-label-md text-label-md hover:bg-surface-container-low px-2 py-1 rounded-lg transition-colors font-bold">
+<span class="material-symbols-outlined">attach_file</span>
+                            Attach Medical Records (PDF/JPEG)
+                        </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Summary & Confirmation -->
+<div class="lg:col-span-4 sticky top-24">
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-lg overflow-hidden">
+<div class="p-4 bg-primary text-on-primary">
+<h4 class="font-headline-sm text-headline-sm">Booking Summary</h4>
+<p class="font-body-sm text-body-sm opacity-90">Case ID: #BC-4921-X</p>
+</div>
+<div class="p-4 space-y-4">
+<div class="flex justify-between items-center py-2 border-b border-outline-variant border-dashed">
+<span class="text-on-surface-variant font-body-md">Consultation Type</span>
+<span class="font-bold text-on-surface">Video Call</span>
+</div>
+<div class="flex justify-between items-center py-2 border-b border-outline-variant border-dashed">
+<span class="text-on-surface-variant font-body-md">Date</span>
+<span class="font-bold text-on-surface">Oct 08, 2023</span>
+</div>
+<div class="flex justify-between items-center py-2 border-b border-outline-variant border-dashed">
+<span class="text-on-surface-variant font-body-md">Time</span>
+<span class="font-bold text-on-surface">11:15 AM (EST)</span>
+</div>
+<div class="flex justify-between items-center py-2 border-b border-outline-variant border-dashed">
+<span class="text-on-surface-variant font-body-md">Consultation Fee</span>
+<span class="font-bold text-secondary">$120.00</span>
+</div>
+<!-- Urgency Indicator -->
+
+<div class="pt-4">
+<button class="w-full bg-primary text-on-primary font-headline-sm py-3 rounded-xl hover:shadow-md active:scale-95 transition-all flex justify-center items-center gap-2">
+                            Confirm Booking
+                            <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+<p class="text-center text-on-surface-variant font-body-sm text-body-sm mt-4">
+                            By confirming, you agree to our <a class="text-primary underline font-bold" href="#">Terms of Service</a> and Cancellation Policy.
+                        </p>
+</div>
+</div>
+</div>
+<!-- Help Desk Card -->
+
+</div>
+</div>
+</main>
+<!-- Bottom Navigation (Mobile Only) -->
+
+<script>
+    // Simple micro-interaction for time slot selection
+    const timeButtons = document.querySelectorAll('.grid-cols-2 button:not([disabled])');
+    timeButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            timeButtons.forEach(b => {
+                b.classList.remove('bg-primary-container', 'text-on-primary-container', 'font-bold', 'border-2', 'shadow-sm', 'border-primary');
+                b.classList.add('border', 'border-outline-variant');
+            });
+            btn.classList.remove('border', 'border-outline-variant');
+            btn.classList.add('bg-primary-container', 'text-on-primary-container', 'font-bold', 'border-2', 'shadow-sm', 'border-primary');
+        });
+    });
+
+    // Simple date selection interaction
+    const dates = document.querySelectorAll('.grid-cols-7 div:not(.opacity-30)');
+    dates.forEach(date => {
+        date.addEventListener('click', () => {
+            dates.forEach(d => {
+                d.classList.remove('bg-primary', 'text-on-primary', 'font-bold');
+                d.classList.add('hover:bg-surface-container', 'cursor-pointer');
+            });
+            date.classList.add('bg-primary', 'text-on-primary', 'font-bold');
+            date.classList.remove('hover:bg-surface-container', 'cursor-pointer');
+        });
+    });
+</script>
+
+
+</body></html>

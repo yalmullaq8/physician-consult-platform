@@ -1,0 +1,415 @@
+<!DOCTYPE html><html class="light" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>MedConsult Pro | Physician-to-Physician Platform</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9f9f9;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid #bfcabb;
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 24px;
+        }
+    </style>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "on-tertiary-fixed": "#1a1c1c",
+                "surface-bright": "#f9f9f9",
+                "primary": "#00501e",
+                "on-secondary-fixed": "#410003",
+                "outline-variant": "#bfcabb",
+                "on-secondary": "#ffffff",
+                "surface-container-highest": "#e2e2e2",
+                "on-secondary-container": "#fffbff",
+                "on-primary": "#ffffff",
+                "on-error-container": "#93000a",
+                "surface": "#f9f9f9",
+                "inverse-on-surface": "#f1f1f1",
+                "primary-container": "#006b2b",
+                "on-primary-container": "#8ee999",
+                "on-secondary-fixed-variant": "#93000e",
+                "surface-variant": "#e2e2e2",
+                "primary-fixed-dim": "#80da8c",
+                "on-tertiary-fixed-variant": "#464747",
+                "surface-container-low": "#f3f3f3",
+                "on-background": "#1b1b1b",
+                "primary-fixed": "#9cf7a6",
+                "on-tertiary": "#ffffff",
+                "outline": "#6f7a6e",
+                "surface-container-lowest": "#ffffff",
+                "surface-dim": "#dadada",
+                "on-primary-fixed-variant": "#005320",
+                "secondary": "#bb0015",
+                "inverse-primary": "#80da8c",
+                "tertiary-fixed": "#e3e2e2",
+                "on-surface-variant": "#3f493e",
+                "tertiary-container": "#5b5c5c",
+                "inverse-surface": "#303030",
+                "tertiary": "#444445",
+                "on-surface": "#1b1b1b",
+                "tertiary-fixed-dim": "#c7c6c6",
+                "on-primary-fixed": "#002108",
+                "surface-container-high": "#e8e8e8",
+                "secondary-fixed": "#ffdad6",
+                "background": "#f9f9f9",
+                "secondary-container": "#e32027",
+                "on-error": "#ffffff",
+                "surface-tint": "#056d2d",
+                "on-tertiary-container": "#d5d4d4",
+                "surface-container": "#eeeeee",
+                "secondary-fixed-dim": "#ffb4ac",
+                "error": "#ba1a1a",
+                "error-container": "#ffdad6"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.125rem",
+                "lg": "0.25rem",
+                "xl": "0.5rem",
+                "full": "0.75rem"
+        },
+        "spacing": {
+                "margin-mobile": "16px",
+                "margin-desktop": "48px",
+                "container-max": "1280px",
+                "unit": "4px",
+                "gutter": "24px"
+        },
+        "fontFamily": {
+                "label-bold": [
+                        "Inter"
+                ],
+                "body-sm": [
+                        "Inter"
+                ],
+                "body-md": [
+                        "Inter"
+                ],
+                "headline-xl": [
+                        "Inter"
+                ],
+                "label-md": [
+                        "Inter"
+                ],
+                "headline-lg-mobile": [
+                        "Inter"
+                ],
+                "headline-lg": [
+                        "Inter"
+                ]
+        },
+        "fontSize": {
+                "label-bold": [
+                        "12px",
+                        {
+                                "lineHeight": "16px",
+                                "letterSpacing": "0.05em",
+                                "fontWeight": "700"
+                        }
+                ],
+                "body-sm": [
+                        "14px",
+                        {
+                                "lineHeight": "20px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "body-md": [
+                        "16px",
+                        {
+                                "lineHeight": "24px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "headline-xl": [
+                        "40px",
+                        {
+                                "lineHeight": "48px",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "700"
+                        }
+                ],
+                "label-md": [
+                        "12px",
+                        {
+                                "lineHeight": "16px",
+                                "fontWeight": "500"
+                        }
+                ],
+                "headline-lg-mobile": [
+                        "24px",
+                        {
+                                "lineHeight": "32px",
+                                "fontWeight": "600"
+                        }
+                ],
+                "headline-lg": [
+                        "32px",
+                        {
+                                "lineHeight": "40px",
+                                "letterSpacing": "-0.01em",
+                                "fontWeight": "600"
+                        }
+                ]
+        }
+},
+    },
+  }
+</script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center px-6 py-4 w-full sticky top-0 z-50 bg-surface dark:bg-surface-dim border-b border-outline-variant">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary" data-icon="medical_services">medical_services</span>
+<h1 class="text-2xl font-bold text-primary">MedConsult Pro</h1>
+</div>
+<!-- Desktop Search & Filter Bar Integration -->
+<div class="hidden md:flex flex-1 max-w-2xl mx-8">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline" data-icon="search">search</span>
+<input class="w-full pl-[48px] pr-4 py-2 bg-surface-container-low border border-outline-variant rounded-lg text-base focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all" placeholder="Search by name, specialty, or condition..." type="text">
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="hidden lg:flex items-center gap-1 text-sm font-medium text-primary hover:bg-surface-container-low transition-colors px-4 py-2 rounded">
+<span class="material-symbols-outlined" data-icon="filter_list">filter_list</span>
+                Filters
+            </button>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer active:opacity-80" data-icon="account_circle">account_circle</span>
+</div>
+</header>
+<main class="max-w-[1280px] mx-auto px-4 md:px-8 py-6 mb-24">
+<!-- Hero Context -->
+<section class="mb-8">
+<h2 class="text-3xl md:text-4xl font-bold text-on-surface mb-2">Peer Consultations</h2>
+<p class="text-lg text-on-surface-variant max-w-3xl">Connect with leading specialists for high-level clinical guidance, complex case reviews, and collaborative medical insights.</p>
+</section>
+<!-- Filters Section (Mobile/Compact) -->
+
+<!-- Physician List (Bento-style Grid) -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Physician Card 1 -->
+<div class="glass-card p-4 flex flex-col hover:shadow-md transition-shadow group rounded-full">
+<div class="flex items-start gap-4 mb-4">
+<img alt="Dr. Sarah Jenkins" class="w-20 h-20 rounded-full object-cover border-2 border-primary-fixed" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDBSzMDMQenvTwCECd4RBVE0ft0I0Hy1VlkomrTY0dh-DNhrK4FiIcwmk_eNEccYPWmIXJPN1F1ki0EUv6vuvwRxuqSkNGOnnm52D-PbALsb1ag4FLGR14yisckIyOjOFxwjIotJdVUtb7dgDIOgL2JXQwLgx7H9GZ_z3TfdeH3x8NI329auMpi-tDI1xXjYArQFnjpwuSZnwFZ84hGcElfHZjChC7RiPQByWs08qjBFmGsBqTJvkG7_FijEHsmA2DxkW67qJdTVQ">
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h3 class="text-lg font-semibold text-on-surface">Dr. Sarah Jenkins</h3>
+
+</div>
+<p class="text-xs font-bold text-primary uppercase tracking-wider">Advanced Cardiology</p>
+</div>
+</div>
+<p class="text-sm text-on-surface-variant mb-6 line-clamp-3">
+                    Specializing in complex valvular heart disease and preventative cardiology. Over 15 years of experience at Johns Hopkins.
+                </p>
+<div class="mt-auto flex flex-col gap-2">
+<button class="w-full py-2 rounded font-bold text-sm bg-primary text-on-primary hover:bg-primary-container transition-all active:scale-95">
+                        Book Now
+                    </button>
+<button class="w-full py-2 rounded font-bold text-sm border border-primary text-primary hover:bg-surface-container-low transition-all">
+                        More Details
+                    </button>
+</div>
+</div>
+<!-- Physician Card 2 -->
+<div class="glass-card p-4 flex flex-col hover:shadow-md transition-shadow group rounded-full">
+<div class="flex items-start gap-4 mb-4">
+<img alt="Dr. Michael Chen" class="w-20 h-20 rounded-full object-cover border-2 border-primary-fixed" src="https://lh3.googleusercontent.com/aida-public/AB6AXuACdWGFpWKDmDgXsEz2OBzBeU8njWgDwp9ZV-K4dK6T7dTxmtsQzd5YEv8CNYBbX5qciIZB8naoxj_pbTGucUsSKuGnGdBjvBPNwcg46b-fnFK8rZvzKSOpPagEUnyKOTAiPGiDYi77Ra7Ef9o78lfkVRtAlsozNXAijOCjx5Ljndqx2ksF2XzoG6pYTI67VLBmqdSqqSrMjsbTRC_k7J51kb2pd1s8Toio5n7b6vA9G-kDd6yRy7YoxSFgT4B1p3E9CV7uQd7EWA">
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h3 class="text-lg font-semibold text-on-surface">Dr. Michael Chen</h3>
+
+</div>
+<p class="text-xs font-bold text-primary uppercase tracking-wider">Neurology &amp; Sleep</p>
+</div>
+</div>
+<p class="text-sm text-on-surface-variant mb-6 line-clamp-3">
+                    Expert in neurodegenerative disorders and circadian rhythm dysfunction. Lead researcher in clinical trial AI-Neurology.
+                </p>
+<div class="mt-auto flex flex-col gap-2">
+<button class="w-full py-2 rounded font-bold text-sm bg-primary text-on-primary hover:bg-primary-container transition-all active:scale-95">
+                        Book Now
+                    </button>
+<button class="w-full py-2 rounded font-bold text-sm border border-primary text-primary hover:bg-surface-container-low transition-all">
+                        More Details
+                    </button>
+</div>
+</div>
+<!-- Physician Card 3 -->
+<div class="glass-card p-4 flex flex-col hover:shadow-md transition-shadow group rounded-full">
+<div class="flex items-start gap-4 mb-4">
+<img alt="Dr. Elena Rodriguez" class="w-20 h-20 rounded-full object-cover border-2 border-primary-fixed" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCen6kxWIyfGrUcfqMC3hGR544Yto8rSatlOwdCkpjUz37r3krQadqhSj-IochPDbBFBodRhT_EtGEC-dOdYvfKUkqgJBzKrAAyP7n7mI_BA-_Po_2jYax_lScNztmNAj92CINgS5Z3xkqITmJTn1PIxzr72mDoReSiXWR-rDIRvyweZxTh7a6YMAeKagkNetkZPbT6RZlp6BkVVF4BWM9rIOhRZClDuApC8KwCPoEPGp5v1nXKSb0A02v2B4QbbJ5DbYRVjftJwQ">
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h3 class="text-lg font-semibold text-on-surface">Dr. Elena Rodriguez</h3>
+
+</div>
+<p class="text-xs font-bold text-primary uppercase tracking-wider">Oncology Specialist</p>
+</div>
+</div>
+<p class="text-sm text-on-surface-variant mb-6 line-clamp-3">
+                    Pioneer in precision medicine for breast cancer. Collaborative approach to targeted immunotherapy and complex surgical cases.
+                </p>
+<div class="mt-auto flex flex-col gap-2">
+<button class="w-full py-2 rounded font-bold text-sm bg-primary text-on-primary hover:bg-primary-container transition-all active:scale-95">
+                        Book Now
+                    </button>
+<button class="w-full py-2 rounded font-bold text-sm border border-primary text-primary hover:bg-surface-container-low transition-all">
+                        More Details
+                    </button>
+</div>
+</div>
+<!-- Physician Card 4 -->
+<div class="glass-card p-4 flex flex-col hover:shadow-md transition-shadow group rounded-full">
+<div class="flex items-start gap-4 mb-4">
+<img alt="Dr. Julian Thorne" class="w-20 h-20 rounded-full object-cover border-2 border-primary-fixed" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFqYPwSzWGRga2mFf2wyAVcGtS_vlCUaut-YjnOtF-KWq5ZTXoQh6U6qsRlqqptoLyY_izBZQ5kliXdGoCEtyC8fOWNzGgAhjUlI0f53JFEPdMzaTvpwVVVgfaNzJNg5WwSjaGiW7GB1lMcgWhPSvpKNr73DumrXU1slbj9bRWvcpl5VXsLn7xbZJg_ASQynH_5-AnDlO5d_q58aOhrfmy4xQyIJSgaccVCiNa6T6YYS2wG6b-tO6xHq9ZXXml_j68KqDZJBMMjA">
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h3 class="text-lg font-semibold text-on-surface">Dr. Julian Thorne</h3>
+
+</div>
+<p class="text-xs font-bold text-primary uppercase tracking-wider">Radiology &amp; AI</p>
+</div>
+</div>
+<p class="text-sm text-on-surface-variant mb-6 line-clamp-3">
+                    Specialist in diagnostic imaging with focus on early-stage tumor detection. Expert in clinical implementation of AI diagnostic tools.
+                </p>
+<div class="mt-auto flex flex-col gap-2">
+<button class="w-full py-2 rounded font-bold text-sm bg-primary text-on-primary hover:bg-primary-container transition-all active:scale-95">
+                        Book Now
+                    </button>
+<button class="w-full py-2 rounded font-bold text-sm border border-primary text-primary hover:bg-surface-container-low transition-all">
+                        More Details
+                    </button>
+</div>
+</div>
+<!-- Physician Card 5 -->
+<div class="glass-card p-4 flex flex-col hover:shadow-md transition-shadow group rounded-full">
+<div class="flex items-start gap-4 mb-4">
+<img alt="Dr. Amara Okafor" class="w-20 h-20 rounded-full object-cover border-2 border-primary-fixed" src="https://lh3.googleusercontent.com/aida-public/AB6AXuATicJ-pMy7Fc9tbcE8N164lqttxqn5ZARxVTglVE1dgIejedjSzfwoWOfkB_Y48saWcCTAQCqrGedbcIhj0w1NnQifFHkRA5ADrE-f0QVsGCAYUkTvCBAAsg4mQ6eTJaP4vXM0YU7JR2__qenLjcQPI-HZWL_x0mKsk9iSemixSGMkv0aDkBvysaYVmZxi7lxMUz8VSPGP5S5WFTVjelKCrm3swKTCq99zepvGxdCaXqeWCKvJvE_jizjji6GYNj8I5FeHVUC1aA">
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h3 class="text-lg font-semibold text-on-surface">Dr. Amara Okafor</h3>
+
+</div>
+<p class="text-xs font-bold text-primary uppercase tracking-wider">Endocrinology</p>
+</div>
+</div>
+<p class="text-sm text-on-surface-variant mb-6 line-clamp-3">
+                    Renowned expert in metabolic disorders and hormonal health. Consults for complex Type 1 and Type 2 diabetes management strategies.
+                </p>
+<div class="mt-auto flex flex-col gap-2">
+<button class="w-full py-2 rounded font-bold text-sm bg-primary text-on-primary hover:bg-primary-container transition-all active:scale-95">
+                        Book Now
+                    </button>
+<button class="w-full py-2 rounded font-bold text-sm border border-primary text-primary hover:bg-surface-container-low transition-all">
+                        More Details
+                    </button>
+</div>
+</div>
+<!-- Physician Card 6 -->
+<div class="glass-card p-4 flex flex-col hover:shadow-md transition-shadow group rounded-full">
+<div class="flex items-start gap-4 mb-4">
+<img alt="Dr. Thomas Miller" class="w-20 h-20 rounded-full object-cover border-2 border-primary-fixed" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAebAdHKx-Zsfxah9yRuZcAof6ErPVCP0SR5AKrysb_kQCaETWVMKAVvahG4KpFt8f70hpYS_gsOLO5wD9QQElY_cfl29YbOfHCRALoWpkNuYRpEiLygacgVre7Itx0lPGLO5th_hzXgNNiuqxhXXdcW9lcnlkepbItUTy_tu6sx2l-nSRABkHsdYew4d5n-nL4AhawcMhd2u6PFAtcuprt87RcdZ5Pad4cjmzBo1lM-15Es8jE9YtXHZycDExD9yOJ5KheXG9iJA">
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h3 class="text-lg font-semibold text-on-surface">Dr. Thomas Miller</h3>
+
+</div>
+<p class="text-xs font-bold text-primary uppercase tracking-wider">Internal Medicine</p>
+</div>
+</div>
+<p class="text-sm text-on-surface-variant mb-6 line-clamp-3">
+                    Focused on multi-system pathology and geriatric care coordination. Over 30 years of clinical practice and medical education leadership.
+                </p>
+<div class="mt-auto flex flex-col gap-2">
+<button class="w-full py-2 rounded font-bold text-sm bg-primary text-on-primary hover:bg-primary-container transition-all active:scale-95">
+                        Book Now
+                    </button>
+<button class="w-full py-2 rounded font-bold text-sm border border-primary text-primary hover:bg-surface-container-low transition-all">
+                        More Details
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+
+<!-- Desktop Sidebar (NavigationDrawer) Logic -->
+<aside class="hidden lg:block fixed left-0 top-0 h-full w-80 bg-surface border-r border-outline-variant shadow-lg z-40 pt-[80px]">
+<div class="px-4 py-4 flex items-center gap-4 mb-8">
+<div class="w-12 h-12 bg-secondary-container rounded-full flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined" data-icon="medical_services">medical_services</span>
+</div>
+<div>
+<h4 class="text-lg font-semibold text-on-surface">Dr. Julian Thorne</h4>
+<p class="text-xs text-on-surface-variant">Cardiology Specialist</p>
+<p class="text-xs text-outline">NPI: 1234567890</p>
+</div>
+</div>
+<nav class="flex flex-col">
+<div class="cursor-pointer px-4 py-2 my-1 mx-2 flex items-center gap-4 hover:bg-surface-container-high transition-all text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="text-sm">Dashboard</span>
+</div>
+<div class="cursor-pointer px-4 py-2 my-1 mx-2 flex items-center gap-4 bg-secondary-container text-on-secondary-container rounded font-bold">
+<span class="material-symbols-outlined" data-icon="stethoscope">stethoscope</span>
+<span class="text-sm">Specialists</span>
+</div>
+<div class="cursor-pointer px-4 py-2 my-1 mx-2 flex items-center gap-4 hover:bg-surface-container-high transition-all text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="pending_actions">pending_actions</span>
+<span class="text-sm">Active Consults</span>
+</div>
+<div class="cursor-pointer px-4 py-2 my-1 mx-2 flex items-center gap-4 hover:bg-surface-container-high transition-all text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="text-sm">History</span>
+</div>
+<div class="cursor-pointer px-4 py-2 my-1 mx-2 flex items-center gap-4 hover:bg-surface-container-high transition-all text-on-surface-variant">
+<span class="material-symbols-outlined" data-icon="library_books">library_books</span>
+<span class="text-sm">Medical Resources</span>
+</div>
+</nav>
+</aside>
+<script>
+        // Simple Interaction logic
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('click', function() {
+                const text = this.innerText;
+                if (text === 'Book Now') {
+                    const btnContent = this.innerHTML;
+                    this.innerHTML = '<span class="flex items-center justify-center gap-2"><span class="animate-spin material-symbols-outlined" style="font-size: 16px;">progress_activity</span> Processing...</span>';
+                    setTimeout(() => {
+                        this.innerHTML = '<span class="flex items-center justify-center gap-2"><span class="material-symbols-outlined" style="font-size: 16px;">check_circle</span> Scheduled</span>';
+                        this.classList.remove('bg-primary');
+                        this.classList.add('bg-tertiary-container', 'text-on-tertiary-container');
+                    }, 1500);
+                }
+            });
+        });
+    </script>
+
+
+</body></html>

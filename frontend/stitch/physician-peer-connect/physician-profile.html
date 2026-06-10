@@ -1,0 +1,383 @@
+<!DOCTYPE html><html class="light" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Dr. Julian Thorne - Physician Profile</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        .clinical-blur {
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+    </style>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "on-tertiary-fixed": "#1a1c1c",
+                "surface-bright": "#f9f9f9",
+                "primary": "#00501e",
+                "on-secondary-fixed": "#410003",
+                "outline-variant": "#bfcabb",
+                "on-secondary": "#ffffff",
+                "surface-container-highest": "#e2e2e2",
+                "on-secondary-container": "#fffbff",
+                "on-primary": "#ffffff",
+                "on-error-container": "#93000a",
+                "surface": "#f9f9f9",
+                "inverse-on-surface": "#f1f1f1",
+                "primary-container": "#006b2b",
+                "on-primary-container": "#8ee999",
+                "on-secondary-fixed-variant": "#93000e",
+                "surface-variant": "#e2e2e2",
+                "primary-fixed-dim": "#80da8c",
+                "on-tertiary-fixed-variant": "#464747",
+                "surface-container-low": "#f3f3f3",
+                "on-background": "#1b1b1b",
+                "primary-fixed": "#9cf7a6",
+                "on-tertiary": "#ffffff",
+                "outline": "#6f7a6e",
+                "surface-container-lowest": "#ffffff",
+                "surface-dim": "#dadada",
+                "on-primary-fixed-variant": "#005320",
+                "secondary": "#bb0015",
+                "inverse-primary": "#80da8c",
+                "tertiary-fixed": "#e3e2e2",
+                "on-surface-variant": "#3f493e",
+                "tertiary-container": "#5b5c5c",
+                "inverse-surface": "#303030",
+                "tertiary": "#444445",
+                "on-surface": "#1b1b1b",
+                "tertiary-fixed-dim": "#c7c6c6",
+                "on-primary-fixed": "#002108",
+                "surface-container-high": "#e8e8e8",
+                "secondary-fixed": "#ffdad6",
+                "background": "#f9f9f9",
+                "secondary-container": "#e32027",
+                "on-error": "#ffffff",
+                "surface-tint": "#056d2d",
+                "on-tertiary-container": "#d5d4d4",
+                "surface-container": "#eeeeee",
+                "secondary-fixed-dim": "#ffb4ac",
+                "error": "#ba1a1a",
+                "error-container": "#ffdad6"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.125rem",
+                "lg": "0.25rem",
+                "xl": "0.5rem",
+                "full": "0.75rem"
+        },
+        "spacing": {
+                "margin-mobile": "16px",
+                "margin-desktop": "48px",
+                "container-max": "1280px",
+                "unit": "4px",
+                "gutter": "24px"
+        },
+        "fontFamily": {
+                "label-bold": [
+                        "Inter"
+                ],
+                "body-sm": [
+                        "Inter"
+                ],
+                "body-md": [
+                        "Inter"
+                ],
+                "headline-xl": [
+                        "Inter"
+                ],
+                "label-md": [
+                        "Inter"
+                ],
+                "headline-lg-mobile": [
+                        "Inter"
+                ],
+                "headline-lg": [
+                        "Inter"
+                ]
+        },
+        "fontSize": {
+                "label-bold": [
+                        "12px",
+                        {
+                                "lineHeight": "16px",
+                                "letterSpacing": "0.05em",
+                                "fontWeight": "700"
+                        }
+                ],
+                "body-sm": [
+                        "14px",
+                        {
+                                "lineHeight": "20px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "body-md": [
+                        "16px",
+                        {
+                                "lineHeight": "24px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "headline-xl": [
+                        "40px",
+                        {
+                                "lineHeight": "48px",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "700"
+                        }
+                ],
+                "label-md": [
+                        "12px",
+                        {
+                                "lineHeight": "16px",
+                                "fontWeight": "500"
+                        }
+                ],
+                "headline-lg-mobile": [
+                        "24px",
+                        {
+                                "lineHeight": "32px",
+                                "fontWeight": "600"
+                        }
+                ],
+                "headline-lg": [
+                        "32px",
+                        {
+                                "lineHeight": "40px",
+                                "letterSpacing": "-0.01em",
+                                "fontWeight": "600"
+                        }
+                ]
+        }
+},
+    },
+  }
+</script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-surface-dim border-b border-outline-variant dark:border-outline flex justify-between items-center px-gutter py-unit-4 w-full sticky top-0 z-50">
+<div class="flex items-center gap-unit-4 cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed-dim" data-icon="medical_services">medical_services</span>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary dark:text-primary-fixed-dim">MedConsult Pro</h1>
+</div>
+<div class="hidden md:flex items-center gap-margin-desktop">
+<nav class="flex gap-gutter">
+<a class="text-on-surface-variant hover:bg-surface-container-low transition-colors px-unit py-unit rounded-lg font-label-md text-label-md" href="#">Find Doctors</a>
+<a class="text-on-surface-variant hover:bg-surface-container-low transition-colors px-unit py-unit rounded-lg font-label-md text-label-md" href="#">My Cases</a>
+<a class="text-on-surface-variant hover:bg-surface-container-low transition-colors px-unit py-unit rounded-lg font-label-md text-label-md" href="#">Messages</a>
+</nav>
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed-dim text-[32px] cursor-pointer" data-icon="account_circle">account_circle</span>
+</div>
+<button class="md:hidden material-symbols-outlined" data-icon="menu">menu</button>
+</header>
+<main class="max-w-[1280px] mx-auto px-margin-mobile md:px-margin-desktop py-gutter mb-32">
+<!-- Hero Section -->
+<section class="relative bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden mb-gutter shadow-sm">
+<div class="h-48 bg-gradient-to-r from-primary to-primary-container opacity-90"></div>
+<div class="px-gutter pb-gutter flex flex-col md:flex-row items-end gap-gutter -mt-16 relative z-10">
+<div class="p-1 bg-surface-container-lowest rounded-full shadow-lg">
+<img alt="Dr. Julian Thorne" class="w-40 h-40 rounded-full object-cover border-4 border-surface-container-lowest" data-alt="A professional, high-resolution portrait of a male physician in his mid-40s with a warm, confident expression. He is wearing a clean white clinical coat over a light blue dress shirt, standing in a bright, modern medical facility with soft bokeh lighting. The overall aesthetic is clean, medical, and trustworthy, using a palette of soft whites and professional blues to evoke authority and care." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCvzYq1qSrWLbZpZs9OKz_vcoT8anxm740yDrrLZn2zRHqIeIHjqzZYugXuZgWo25VXPdpCa5nwVZBdsDgxL5QgiWDQLpfZaux9JeUuTTlPcqnzRokQlL_nv8Xb2vUyboDyfCg_GTUYaz9ZD12-rFl9HZlNsNH9Fy4H2dT4HIeFaXpjt899t4ia4uoWjYajjH64ap4WeJcdThsnAw17Df6W1EaSswpeGZ9_h5XrOYkFkiyH8I0Ob-MYqbpi05FQJhenibyP7zY_-g">
+</div>
+<div class="flex-1 pb-4 text-center md:text-left">
+<div class="flex flex-col md:flex-row md:items-center gap-unit-2 md:gap-gutter mb-unit">
+<h2 class="font-headline-xl text-headline-xl text-on-surface">Dr. Julian Thorne</h2>
+<span class="inline-flex items-center bg-secondary-container text-on-secondary-container px-gutter py-unit rounded-full font-label-md text-label-md">
+                            Cardiology Specialist
+                        </span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-unit-4">Senior Consultant at Metro Health Institute</p>
+<div class="flex flex-wrap justify-center md:justify-start gap-unit-4">
+<button class="flex items-center gap-unit-2 bg-primary text-on-primary px-gutter py-unit-4 rounded-lg font-label-bold text-label-bold hover:opacity-90 transition-all active:scale-95">
+<span class="material-symbols-outlined" data-icon="calendar_today">calendar_today</span>
+                            Book Consultation
+                        </button>
+<button class="flex items-center gap-unit-2 border border-primary text-primary px-gutter py-unit-4 rounded-lg font-label-bold text-label-bold hover:bg-surface-container-low transition-all active:scale-95">
+<span class="material-symbols-outlined" data-icon="mail">mail</span>
+                            Send Message
+                        </button>
+</div>
+</div>
+<div class="hidden lg:flex flex-col items-end gap-unit-2 pb-4">
+<div class="text-right">
+<p class="font-label-md text-label-md text-outline uppercase tracking-wider">Experience</p>
+<p class="font-headline-lg text-headline-lg text-primary">15+ Years</p>
+</div>
+<div class="text-right">
+<p class="font-label-md text-label-md text-outline uppercase tracking-wider">Patients Served</p>
+<p class="font-headline-lg text-headline-lg text-primary">4,500+</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Bento Layout for Details -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Left Column: Bio & Expertise -->
+<div class="md:col-span-8 flex flex-col gap-gutter">
+<!-- About Section -->
+<article class="bg-surface-container-lowest p-gutter rounded-xl border border-outline-variant shadow-sm">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-unit-4 flex items-center gap-unit-2">
+<span class="material-symbols-outlined text-primary" data-icon="info">info</span>
+                        About
+                    </h3>
+<div class="font-body-md text-body-md text-on-surface-variant space-y-unit-4 leading-relaxed">
+<p class="">Dr. Julian Thorne is a board-certified cardiologist specializing in interventional cardiology and structural heart disease. With over 15 years of clinical experience, he has led numerous clinical trials and is recognized for his patient-centered approach to complex cardiovascular issues.</p>
+<p class="">His philosophy centers on "Clarity and Compassion," ensuring that every patient fully understands their diagnosis and the full spectrum of modern treatment options available to them.</p>
+</div>
+</article>
+<!-- Expertise Section -->
+<article class="bg-surface-container-lowest p-gutter rounded-xl border border-outline-variant shadow-sm">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-gutter flex items-center gap-unit-2">
+<span class="material-symbols-outlined text-primary" data-icon="star">star</span>
+                        Expertise &amp; Specializations
+                    </h3>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-unit-4">
+<div class="flex items-start gap-gutter p-gutter bg-surface-container-low rounded-lg transition-all hover:shadow-md border border-transparent hover:border-outline-variant">
+<div class="bg-primary-container p-unit-2 rounded-lg text-on-primary-container">
+<span class="material-symbols-outlined" data-icon="cardiology">cardiology</span>
+</div>
+<div>
+<h4 class="font-label-bold text-label-bold text-on-surface">Interventional Cardiology</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Minimally invasive heart procedures.</p>
+</div>
+</div>
+<div class="flex items-start gap-gutter p-gutter bg-surface-container-low rounded-lg transition-all hover:shadow-md border border-transparent hover:border-outline-variant">
+<div class="bg-secondary-container p-unit-2 rounded-lg text-on-secondary-container">
+<span class="material-symbols-outlined" data-icon="ecg_heart">ecg_heart</span>
+</div>
+<div>
+<h4 class="font-label-bold text-label-bold text-on-surface">Atrial Fibrillation</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Management of complex heart rhythms.</p>
+</div>
+</div>
+<div class="flex items-start gap-gutter p-gutter bg-surface-container-low rounded-lg transition-all hover:shadow-md border border-transparent hover:border-outline-variant">
+<div class="bg-tertiary-container p-unit-2 rounded-lg text-on-tertiary-container">
+<span class="material-symbols-outlined" data-icon="monitor_heart">monitor_heart</span>
+</div>
+<div>
+<h4 class="font-label-bold text-label-bold text-on-surface">Heart Failure</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Advanced therapies and chronic care.</p>
+</div>
+</div>
+<div class="flex items-start gap-gutter p-gutter bg-surface-container-low rounded-lg transition-all hover:shadow-md border border-transparent hover:border-outline-variant">
+<div class="bg-primary-container p-unit-2 rounded-lg text-on-primary-container">
+<span class="material-symbols-outlined" data-icon="stethoscope">stethoscope</span>
+</div>
+<div>
+<h4 class="font-label-bold text-label-bold text-on-surface">Preventive Care</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Lipidology and hypertension management.</p>
+</div>
+</div>
+</div>
+</article>
+</div>
+<!-- Right Column: Fees & Availability -->
+<div class="md:col-span-4 flex flex-col gap-gutter">
+<!-- Consultation Fees -->
+<aside class="bg-surface-container-lowest p-gutter rounded-xl border border-outline-variant shadow-sm h-fit">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-gutter flex items-center gap-unit-2">
+<span class="material-symbols-outlined text-primary" data-icon="payments">payments</span>
+                        Consultation Fees
+                    </h3>
+<div class="space-y-unit-4">
+<div class="flex justify-between items-center py-unit-2 border-b border-outline-variant">
+<span class="font-body-md text-body-md text-on-surface-variant">Initial Consult</span>
+<span class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">$250</span>
+</div>
+<div class="flex justify-between items-center py-unit-2 border-b border-outline-variant">
+<span class="font-body-md text-body-md text-on-surface-variant">Follow-up</span>
+<span class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">$125</span>
+</div>
+<div class="flex justify-between items-center py-unit-2">
+<span class="font-body-md text-body-md text-on-surface-variant">Urgent Review</span>
+<span class="font-headline-lg-mobile text-headline-lg-mobile text-secondary">$350</span>
+</div>
+</div>
+<div class="mt-gutter p-unit-4 bg-surface-container-low rounded-lg">
+
+
+</div>
+</aside>
+<!-- Availability -->
+<aside class="bg-surface-container-lowest p-gutter rounded-xl border border-outline-variant shadow-sm h-fit">
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-gutter flex items-center gap-unit-2">
+<span class="material-symbols-outlined text-primary" data-icon="schedule">schedule</span>
+                        Availability
+                    </h3>
+<div class="space-y-unit-2">
+<div class="flex justify-between items-center p-unit-2 rounded-lg bg-surface-container-low border-l-4 border-primary">
+<span class="font-label-md text-label-md">Monday - Wednesday</span>
+<span class="font-label-bold text-label-bold">08:00 - 16:00</span>
+</div>
+<div class="flex justify-between items-center p-unit-2 rounded-lg">
+<span class="font-label-md text-label-md text-on-surface-variant">Thursday</span>
+<span class="font-label-bold text-label-bold">10:00 - 18:00</span>
+</div>
+<div class="flex justify-between items-center p-unit-2 rounded-lg">
+<span class="font-label-md text-label-md text-on-surface-variant">Friday</span>
+<span class="font-label-bold text-label-bold">08:00 - 12:00</span>
+</div>
+<div class="flex justify-between items-center p-unit-2 rounded-lg text-outline">
+<span class="font-label-md text-label-md">Sat - Sun</span>
+<span class="font-label-md text-label-md">Unavailable</span>
+</div>
+</div>
+<div class="mt-gutter">
+<p class="font-label-bold text-label-bold text-primary mb-unit-4">Next Available Slot:</p>
+<button class="w-full py-unit-4 rounded-lg bg-primary-container text-on-primary-container font-label-bold text-label-bold transition-transform active:scale-95">
+                            Tuesday, Oct 24 • 09:15 AM
+                        </button>
+</div>
+</aside>
+</div>
+</div>
+<!-- Featured Map Section -->
+
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+
+<script>
+        // Simple Interaction: Header Shadow on Scroll
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 20) {
+                header.classList.add('shadow-md');
+                header.classList.remove('border-b');
+            } else {
+                header.classList.remove('shadow-md');
+                header.classList.add('border-b');
+            }
+        });
+
+        // Ripple Effect
+        document.querySelectorAll('button, a').forEach(el => {
+            el.addEventListener('click', (e) => {
+                const ripple = document.createElement('span');
+                ripple.classList.add('absolute', 'inset-0', 'bg-white', 'opacity-20', 'rounded-lg', 'animate-ping');
+                el.classList.add('relative');
+                el.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 500);
+            });
+        });
+    </script>
+
+
+</body></html>
