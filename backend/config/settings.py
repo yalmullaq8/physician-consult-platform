@@ -277,8 +277,3 @@ CELERY_BEAT_SCHEDULE = {
         "schedule": timedelta(minutes=5),
     },
 }
-
-
-print("SETTINGS CELERY_BROKER_URL repr:", repr(CELERY_BROKER_URL))
-print("SETTINGS CELERY_RESULT_BACKEND repr:", repr(CELERY_RESULT_BACKEND))
-print("SETTINGS REDIS_URL repr:", repr(REDIS_URL))

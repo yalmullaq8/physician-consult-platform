@@ -5,7 +5,29 @@ from django.utils import timezone
 
 from bookings.models import Booking
 
-from .services import send_consultation_reminder
+from .services import (
+    send_booking_confirmed_notifications,
+    send_consultation_reminder,
+    send_payment_failed_notification,
+)
+
+
+@shared_task(name="notifications.tasks.send_booking_confirmed_notifications_task")
+def send_booking_confirmed_notifications_task(booking_id: int):
+    booking = Booking.objects.filter(pk=booking_id).first()
+    if booking is None:
+        return False
+    send_booking_confirmed_notifications(booking)
+    return True
+
+
+@shared_task(name="notifications.tasks.send_payment_failed_notification_task")
+def send_payment_failed_notification_task(booking_id: int, payment_status: str):
+    booking = Booking.objects.filter(pk=booking_id).first()
+    if booking is None:
+        return False
+    send_payment_failed_notification(booking, payment_status)
+    return True
 
 
 def _reminder_window(hours_before: int, window_minutes: int = 15):

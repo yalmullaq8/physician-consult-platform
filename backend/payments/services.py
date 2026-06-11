@@ -21,6 +21,43 @@ class PaymentServiceError(Exception):
         super().__init__(message)
 
 
+def _dispatch_booking_confirmed_notifications(booking):
+    """Send confirmation notifications asynchronously after the transaction commits.
+
+    Falls back to a synchronous send only if dispatching to the broker fails, so
+    a slow email provider never blocks the confirm request path.
+    """
+    booking_id = booking.id
+
+    def _enqueue():
+        from notifications.tasks import send_booking_confirmed_notifications_task
+
+        try:
+            send_booking_confirmed_notifications_task.delay(booking_id)
+        except Exception:
+            from notifications.services import send_booking_confirmed_notifications
+
+            send_booking_confirmed_notifications(booking)
+
+    transaction.on_commit(_enqueue)
+
+
+def _dispatch_payment_failed_notification(booking, payment_status: str):
+    booking_id = booking.id
+
+    def _enqueue():
+        from notifications.tasks import send_payment_failed_notification_task
+
+        try:
+            send_payment_failed_notification_task.delay(booking_id, payment_status)
+        except Exception:
+            from notifications.services import send_payment_failed_notification
+
+            send_payment_failed_notification(booking, payment_status)
+
+    transaction.on_commit(_enqueue)
+
+
 def _parse_payment_status(status_text: str):
     normalized = (status_text or "").strip().lower()
     if normalized in {"paid", "success", "successful"}:
@@ -56,8 +93,10 @@ def _extract_status_reference_candidates(data: dict) -> set[str]:
     return candidates
 
 
-def _find_local_payment(payment_identifier, booking_reference: str | None = None):
-    payment = Payment.objects.select_for_update().filter(
+def _find_local_payment(payment_identifier, booking_reference: str | None = None, *, lock: bool = True):
+    base = Payment.objects.select_for_update() if lock else Payment.objects.all()
+
+    payment = base.filter(
         provider=Payment.PROVIDER_MYFATOORAH,
         provider_invoice_id=str(payment_identifier),
     ).first()
@@ -65,7 +104,7 @@ def _find_local_payment(payment_identifier, booking_reference: str | None = None
     if payment:
         return payment
 
-    payment = Payment.objects.select_for_update().filter(
+    payment = base.filter(
         provider=Payment.PROVIDER_MYFATOORAH,
         provider_payment_id=str(payment_identifier),
     ).first()
@@ -74,7 +113,7 @@ def _find_local_payment(payment_identifier, booking_reference: str | None = None
         return payment
 
     if booking_reference:
-        return Payment.objects.select_for_update().filter(
+        return base.filter(
             provider=Payment.PROVIDER_MYFATOORAH,
             booking__booking_reference=booking_reference,
         ).first()
@@ -83,7 +122,7 @@ def _find_local_payment(payment_identifier, booking_reference: str | None = None
 
 
 def get_local_myfatoorah_payment(payment_identifier, booking_reference: str | None = None):
-    return _find_local_payment(payment_identifier, booking_reference=booking_reference)
+    return _find_local_payment(payment_identifier, booking_reference=booking_reference, lock=False)
 
 
 @transaction.atomic
@@ -276,7 +315,6 @@ def confirm_myfatoorah_payment(payment_identifier, booking_reference: str | None
         payment.booking.status = Booking.STATUS_CONFIRMED
         if previous_status != Payment.STATUS_PAID:
             from audit.services import log_audit_event
-            from notifications.services import send_booking_confirmed_notifications
 
             log_audit_event(
                 action="payment_mark_paid",
@@ -287,13 +325,12 @@ def confirm_myfatoorah_payment(payment_identifier, booking_reference: str | None
                     "new_status": payment.status,
                 },
             )
-            send_booking_confirmed_notifications(payment.booking)
+            _dispatch_booking_confirmed_notifications(payment.booking)
     elif resolved_status == Payment.STATUS_FAILED:
         payment.status = Payment.STATUS_FAILED
         payment.failed_at = timezone.now()
         if previous_status != Payment.STATUS_FAILED:
             from audit.services import log_audit_event
-            from notifications.services import send_payment_failed_notification
 
             log_audit_event(
                 action="payment_mark_failed",
@@ -304,13 +341,12 @@ def confirm_myfatoorah_payment(payment_identifier, booking_reference: str | None
                     "new_status": payment.status,
                 },
             )
-            send_payment_failed_notification(payment.booking, payment.status)
+            _dispatch_payment_failed_notification(payment.booking, payment.status)
     elif resolved_status == Payment.STATUS_CANCELLED:
         payment.status = Payment.STATUS_CANCELLED
         payment.failed_at = timezone.now()
         if previous_status != Payment.STATUS_CANCELLED:
             from audit.services import log_audit_event
-            from notifications.services import send_payment_failed_notification
 
             log_audit_event(
                 action="payment_mark_cancelled",
@@ -321,7 +357,7 @@ def confirm_myfatoorah_payment(payment_identifier, booking_reference: str | None
                     "new_status": payment.status,
                 },
             )
-            send_payment_failed_notification(payment.booking, payment.status)
+            _dispatch_payment_failed_notification(payment.booking, payment.status)
     else:
         payment.status = Payment.STATUS_PENDING
 
