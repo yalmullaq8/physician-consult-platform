@@ -56,6 +56,32 @@ def _extract_status_reference_candidates(data: dict) -> set[str]:
     return candidates
 
 
+def _find_local_payment(payment_identifier, booking_reference: str | None = None):
+    payment = Payment.objects.select_for_update().filter(
+        provider=Payment.PROVIDER_MYFATOORAH,
+        provider_invoice_id=str(payment_identifier),
+    ).first()
+
+    if payment:
+        return payment
+
+    payment = Payment.objects.select_for_update().filter(
+        provider=Payment.PROVIDER_MYFATOORAH,
+        provider_payment_id=str(payment_identifier),
+    ).first()
+
+    if payment:
+        return payment
+
+    if booking_reference:
+        return Payment.objects.select_for_update().filter(
+            provider=Payment.PROVIDER_MYFATOORAH,
+            booking__booking_reference=booking_reference,
+        ).first()
+
+    return None
+
+
 @transaction.atomic
 def initiate_myfatoorah_payment(booking: Booking, payment_method_id: int | None = None):
     payment, _ = Payment.objects.select_for_update().get_or_create(
@@ -123,22 +149,16 @@ def list_myfatoorah_payment_methods(invoice_amount: float):
 def confirm_myfatoorah_payment(payment_identifier, booking_reference: str | None = None):
     key_type = "InvoiceId"
     status_response = None
-    payment = Payment.objects.select_for_update().filter(
-        provider=Payment.PROVIDER_MYFATOORAH,
-        provider_invoice_id=str(payment_identifier),
-    ).first()
+    payment = _find_local_payment(payment_identifier, booking_reference=booking_reference)
 
-    if not payment:
-        payment = Payment.objects.select_for_update().filter(
-            provider=Payment.PROVIDER_MYFATOORAH,
-            provider_payment_id=str(payment_identifier),
-        ).first()
+    if payment and payment.provider_payment_id == str(payment_identifier):
         key_type = "PaymentId"
 
     if payment and payment.status == Payment.STATUS_PAID:
         return payment
 
-    if not payment:
+    if payment is None:
+        # If the local record is missing, try the provider once and resolve it from returned IDs.
         # Callback identifiers vary by integration mode; resolve through provider status first.
         status_errors = []
         for candidate_key_type in ("InvoiceId", "PaymentId"):
@@ -184,6 +204,9 @@ def confirm_myfatoorah_payment(payment_identifier, booking_reference: str | None
 
         if not payment:
             raise PaymentServiceError("booking_not_found", "Payment record not found.")
+    
+    # If provider verification is unavailable but we already have a local record,
+    # return the current local state instead of failing the callback confirm flow.
 
     if status_response is None:
         try:
