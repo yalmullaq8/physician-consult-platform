@@ -135,6 +135,9 @@ def confirm_myfatoorah_payment(payment_identifier, booking_reference: str | None
         ).first()
         key_type = "PaymentId"
 
+    if payment and payment.status == Payment.STATUS_PAID:
+        return payment
+
     if not payment:
         # Callback identifiers vary by integration mode; resolve through provider status first.
         status_errors = []
@@ -188,6 +191,8 @@ def confirm_myfatoorah_payment(payment_identifier, booking_reference: str | None
         except MyFatoorahConfigurationError as exc:
             raise PaymentServiceError("payment_provider_not_configured", str(exc)) from exc
         except MyFatoorahAPIError as exc:
+            if payment:
+                return payment
             raise PaymentServiceError("payment_failed", str(exc)) from exc
 
     data = status_response.get("Data") or {}

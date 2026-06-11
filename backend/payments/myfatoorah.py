@@ -1,4 +1,5 @@
 import json
+import socket
 from urllib import error, request
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
@@ -48,8 +49,10 @@ def _call_myfatoorah(endpoint: str, payload: dict):
     for key, value in headers.items():
         req.add_header(key, value)
 
+    timeout_seconds = getattr(settings, "MYFATOORAH_REQUEST_TIMEOUT_SECONDS", 10)
+
     try:
-        with request.urlopen(req, timeout=20) as response:
+        with request.urlopen(req, timeout=timeout_seconds) as response:
             body = response.read().decode("utf-8")
             if not body:
                 return {}
@@ -57,6 +60,8 @@ def _call_myfatoorah(endpoint: str, payload: dict):
     except error.HTTPError as exc:
         body = exc.read().decode("utf-8") if exc.fp else ""
         raise MyFatoorahAPIError(body or str(exc)) from exc
+    except (TimeoutError, socket.timeout) as exc:
+        raise MyFatoorahAPIError("MyFatoorah request timed out.") from exc
     except error.URLError as exc:
         raise MyFatoorahAPIError(str(exc)) from exc
 

@@ -224,6 +224,7 @@ MYFATOORAH_ERROR_URL = os.getenv(
     "MYFATOORAH_ERROR_URL",
     f"{BACKEND_BASE_URL}/api/payments/myfatoorah/error/",
 )
+MYFATOORAH_REQUEST_TIMEOUT_SECONDS = int(os.getenv("MYFATOORAH_REQUEST_TIMEOUT_SECONDS", "10"))
 
 EMAIL_PROVIDER = os.getenv("EMAIL_PROVIDER", "smtp").strip().lower()
 RESEND_API_KEY = os.getenv("RESEND_API_KEY", "")
