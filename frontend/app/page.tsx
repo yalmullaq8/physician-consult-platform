@@ -42,61 +42,37 @@ export default async function Home({ searchParams }: PageProps) {
 
   return (
     <div className="flex flex-1 flex-col bg-[#f9f9f9] pb-20 text-[#1b1b1b]">
-      <header className="sticky top-0 z-40 border-b border-[#bfcabb] bg-[#f9f9f9]/95 backdrop-blur">
-        <div className="container-shell flex flex-wrap items-center gap-4 py-4 lg:flex-nowrap">
-          <div className="flex items-center gap-2 whitespace-nowrap text-[#00501e]">
-            <span aria-hidden className="text-xl leading-none">+</span>
-            <span className="text-2xl font-bold tracking-tight">MedConsult Pro</span>
-          </div>
-
-          <form action="/" className="flex w-full flex-col gap-2 md:flex-1 md:flex-row md:items-center">
-            <input
-              type="text"
-              name="search"
-              placeholder="Search by name, specialty, or condition..."
-              defaultValue={params.search ?? ""}
-              className="w-full rounded-lg border border-[#bfcabb] bg-[#f3f3f3] px-4 py-2.5 text-sm text-[#1b1b1b] outline-none ring-[#00501e] transition focus:ring-2"
-            />
-
-            <select
-              name="specialty"
-              defaultValue={params.specialty ?? ""}
-              className="rounded-lg border border-[#bfcabb] bg-[#f3f3f3] px-3 py-2.5 text-sm text-[#1b1b1b] outline-none ring-[#00501e] transition focus:ring-2"
-            >
-              <option value="">All specialties</option>
-              {specialties.map((specialty) => (
-                <option key={specialty.id} value={specialty.slug}>
-                  {specialty.name}
-                </option>
-              ))}
-            </select>
-
-            <button
-              type="submit"
-              className="rounded-lg bg-[#00501e] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#006b2b]"
-            >
-              Search
-            </button>
-          </form>
-
-          <div className="flex items-center gap-2">
-            <Link
-              href="/physicians"
-              className="rounded px-3 py-2 text-sm font-medium text-[#00501e] transition hover:bg-[#eef4ee]"
-            >
-              Filters
-            </Link>
-            <Link
-              href="/dashboard"
-              className="rounded px-3 py-2 text-sm font-medium text-[#3f493e] transition hover:bg-[#eef4ee]"
-            >
-              Account
-            </Link>
-          </div>
-        </div>
-      </header>
-
       <main className="container-shell mt-8 flex flex-col gap-8">
+        <form action="/" className="grid gap-2 rounded-2xl border border-[#bfcabb] bg-white p-3 md:grid-cols-[1fr_auto_auto] md:items-center md:p-4">
+          <input
+            type="text"
+            name="search"
+            placeholder="Search by name, specialty, or condition..."
+            defaultValue={params.search ?? ""}
+            className="w-full rounded-lg border border-[#bfcabb] bg-[#f3f3f3] px-4 py-2.5 text-sm text-[#1b1b1b] outline-none ring-[#00501e] transition focus:ring-2"
+          />
+
+          <select
+            name="specialty"
+            defaultValue={params.specialty ?? ""}
+            className="rounded-lg border border-[#bfcabb] bg-[#f3f3f3] px-3 py-2.5 text-sm text-[#1b1b1b] outline-none ring-[#00501e] transition focus:ring-2"
+          >
+            <option value="">All specialties</option>
+            {specialties.map((specialty) => (
+              <option key={specialty.id} value={specialty.slug}>
+                {specialty.name}
+              </option>
+            ))}
+          </select>
+
+          <button
+            type="submit"
+            className="rounded-lg bg-[#00501e] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#006b2b]"
+          >
+            Search
+          </button>
+        </form>
+
         <section className="space-y-3">
           <h1 className="title-serif text-4xl font-semibold tracking-tight md:text-5xl">
             Peer Consultations

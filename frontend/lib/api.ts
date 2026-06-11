@@ -226,7 +226,7 @@ export async function verifyMyFatoorahCallback(
 
   try {
     const query = new URLSearchParams({ paymentId: paymentIdentifier }).toString();
-    const response = await fetch(buildUrl(`/payments/myfatoorah/callback/?${query}`), {
+    const response = await fetch(buildUrl(`/payments/myfatoorah/confirm/?${query}`), {
       cache: "no-store",
     });
 

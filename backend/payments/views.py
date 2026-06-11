@@ -1,3 +1,7 @@
+from urllib.parse import urlencode
+
+from django.conf import settings
+from django.http import HttpResponseRedirect
 from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -47,6 +51,37 @@ class MyFatoorahPaymentMethodsView(APIView):
 
 
 class MyFatoorahCallbackView(APIView):
+	permission_classes = [permissions.AllowAny]
+
+	def get(self, request):
+		payment_id = (
+			request.query_params.get("paymentId")
+			or request.query_params.get("PaymentId")
+			or request.query_params.get("invoiceId")
+			or request.query_params.get("InvoiceId")
+			or request.query_params.get("Id")
+		)
+		base_url = settings.FRONTEND_BASE_URL.rstrip("/")
+
+		if not payment_id:
+			query = urlencode({"error": "Missing payment identifier in callback."})
+			return HttpResponseRedirect(f"{base_url}/payment/error?{query}")
+
+		try:
+			confirm_myfatoorah_payment(payment_id)
+		except PaymentServiceError as exc:
+			query = urlencode({
+				"paymentId": payment_id,
+				"code": exc.code,
+				"error": exc.message,
+			})
+			return HttpResponseRedirect(f"{base_url}/payment/error?{query}")
+
+		query = urlencode({"paymentId": payment_id})
+		return HttpResponseRedirect(f"{base_url}/payment/success?{query}")
+
+
+class MyFatoorahConfirmView(APIView):
 	permission_classes = [permissions.AllowAny]
 
 	def get(self, request):
