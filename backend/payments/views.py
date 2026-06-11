@@ -1,4 +1,5 @@
 from urllib.parse import urlencode
+import logging
 
 from django.conf import settings
 from django.http import HttpResponseRedirect
@@ -12,6 +13,9 @@ from .services import (
 	handle_myfatoorah_webhook,
 	list_myfatoorah_payment_methods,
 )
+
+
+logger = logging.getLogger(__name__)
 
 
 class MyFatoorahPaymentMethodsView(APIView):
@@ -76,14 +80,6 @@ class MyFatoorahCallbackView(APIView):
 				status=status.HTTP_200_OK,
 			)
 
-		try:
-			confirm_myfatoorah_payment(payment_id, booking_reference=booking_reference)
-		except PaymentServiceError as exc:
-			query = {"paymentId": payment_id, "code": exc.code, "error": exc.message}
-			if booking_reference:
-				query["bookingReference"] = booking_reference
-			return HttpResponseRedirect(f"{base_url}/payment/success?{urlencode(query)}")
-
 		query = {"paymentId": payment_id}
 		if booking_reference:
 			query["bookingReference"] = booking_reference
@@ -124,6 +120,21 @@ class MyFatoorahConfirmView(APIView):
 					"error": {"code": exc.code, "message": exc.message},
 				},
 				status=status.HTTP_400_BAD_REQUEST,
+			)
+		except Exception:
+			logger.exception(
+				"Unexpected error in MyFatoorah confirm endpoint.",
+				extra={"payment_id": payment_id, "booking_reference": booking_reference},
+			)
+			return Response(
+				{
+					"success": False,
+					"error": {
+						"code": "payment_internal_error",
+						"message": "Unexpected server error during payment confirmation.",
+					},
+				},
+				status=status.HTTP_500_INTERNAL_SERVER_ERROR,
 			)
 
 		return Response(

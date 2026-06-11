@@ -203,8 +203,11 @@ def confirm_myfatoorah_payment(payment_identifier, booking_reference: str | None
         payment.status = Payment.STATUS_PAID
         payment.paid_at = timezone.now()
         payment.failed_at = None
+        Booking.objects.filter(pk=payment.booking_id).update(
+            status=Booking.STATUS_CONFIRMED,
+            updated_at=timezone.now(),
+        )
         payment.booking.status = Booking.STATUS_CONFIRMED
-        payment.booking.save(update_fields=["status", "updated_at"])
         if previous_status != Payment.STATUS_PAID:
             from audit.services import log_audit_event
             from notifications.services import send_booking_confirmed_notifications
