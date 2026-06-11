@@ -98,6 +98,7 @@ def list_myfatoorah_payment_methods(invoice_amount: float):
 @transaction.atomic
 def confirm_myfatoorah_payment(payment_identifier):
     key_type = "InvoiceId"
+    status_response = None
     payment = Payment.objects.select_for_update().filter(
         provider=Payment.PROVIDER_MYFATOORAH,
         provider_invoice_id=str(payment_identifier),
@@ -111,14 +112,49 @@ def confirm_myfatoorah_payment(payment_identifier):
         key_type = "PaymentId"
 
     if not payment:
-        raise PaymentServiceError("booking_not_found", "Payment record not found.")
+        # Callback identifiers vary by integration mode; resolve through provider status first.
+        status_errors = []
+        for candidate_key_type in ("InvoiceId", "PaymentId"):
+            try:
+                status_response = get_payment_status(payment_identifier, key_type=candidate_key_type)
+                break
+            except MyFatoorahConfigurationError as exc:
+                raise PaymentServiceError("payment_provider_not_configured", str(exc)) from exc
+            except MyFatoorahAPIError as exc:
+                status_errors.append(str(exc))
 
-    try:
-        status_response = get_payment_status(payment_identifier, key_type=key_type)
-    except MyFatoorahConfigurationError as exc:
-        raise PaymentServiceError("payment_provider_not_configured", str(exc)) from exc
-    except MyFatoorahAPIError as exc:
-        raise PaymentServiceError("payment_failed", str(exc)) from exc
+        if not status_response:
+            raise PaymentServiceError(
+                "payment_failed",
+                status_errors[-1] if status_errors else "Unable to verify payment status.",
+            )
+
+        data = status_response.get("Data") or {}
+        resolved_invoice_id = str(data.get("InvoiceId") or "").strip()
+        resolved_payment_id = str(data.get("PaymentId") or "").strip()
+
+        if resolved_invoice_id:
+            payment = Payment.objects.select_for_update().filter(
+                provider=Payment.PROVIDER_MYFATOORAH,
+                provider_invoice_id=resolved_invoice_id,
+            ).first()
+
+        if not payment and resolved_payment_id:
+            payment = Payment.objects.select_for_update().filter(
+                provider=Payment.PROVIDER_MYFATOORAH,
+                provider_payment_id=resolved_payment_id,
+            ).first()
+
+        if not payment:
+            raise PaymentServiceError("booking_not_found", "Payment record not found.")
+
+    if status_response is None:
+        try:
+            status_response = get_payment_status(payment_identifier, key_type=key_type)
+        except MyFatoorahConfigurationError as exc:
+            raise PaymentServiceError("payment_provider_not_configured", str(exc)) from exc
+        except MyFatoorahAPIError as exc:
+            raise PaymentServiceError("payment_failed", str(exc)) from exc
 
     data = status_response.get("Data") or {}
     invoice_status = data.get("InvoiceStatus") or data.get("PaymentStatus")
