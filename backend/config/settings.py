@@ -243,6 +243,11 @@ REDIS_URL = os.environ.get("REDIS_URL")
 
 CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL", REDIS_URL or "redis://localhost:6379/0")
 CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND", REDIS_URL or "redis://localhost:6379/0")
+
+if not CELERY_BROKER_URL:
+    raise RuntimeError("CELERY_BROKER_URL or REDIS_URL is not set")
+
+
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
@@ -272,3 +277,8 @@ CELERY_BEAT_SCHEDULE = {
         "schedule": timedelta(minutes=5),
     },
 }
+
+
+print("SETTINGS CELERY_BROKER_URL repr:", repr(CELERY_BROKER_URL))
+print("SETTINGS CELERY_RESULT_BACKEND repr:", repr(CELERY_RESULT_BACKEND))
+print("SETTINGS REDIS_URL repr:", repr(REDIS_URL))
