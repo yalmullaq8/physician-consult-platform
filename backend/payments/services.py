@@ -209,14 +209,48 @@ def confirm_myfatoorah_payment(payment_identifier, booking_reference: str | None
     # return the current local state instead of failing the callback confirm flow.
 
     if status_response is None:
-        try:
-            status_response = get_payment_status(payment_identifier, key_type=key_type)
-        except MyFatoorahConfigurationError as exc:
-            raise PaymentServiceError("payment_provider_not_configured", str(exc)) from exc
-        except MyFatoorahAPIError as exc:
+        candidate_key_types = [key_type]
+        if key_type != "PaymentId":
+            candidate_key_types.append("PaymentId")
+        if key_type != "InvoiceId":
+            candidate_key_types.append("InvoiceId")
+
+        candidate_responses = []
+        status_errors = []
+        for candidate_key_type in candidate_key_types:
+            try:
+                candidate_responses.append(
+                    (candidate_key_type, get_payment_status(payment_identifier, key_type=candidate_key_type))
+                )
+            except MyFatoorahConfigurationError as exc:
+                raise PaymentServiceError("payment_provider_not_configured", str(exc)) from exc
+            except MyFatoorahAPIError as exc:
+                status_errors.append(str(exc))
+
+        if not candidate_responses:
             if payment:
                 return payment
-            raise PaymentServiceError("payment_failed", str(exc)) from exc
+            raise PaymentServiceError(
+                "payment_failed",
+                status_errors[-1] if status_errors else "Unable to verify payment status.",
+            )
+
+        selected = None
+        if payment:
+            for candidate_key_type, candidate_response in candidate_responses:
+                data = candidate_response.get("Data") or {}
+                response_invoice_id = str(data.get("InvoiceId") or "").strip()
+                response_payment_id = str(data.get("PaymentId") or "").strip()
+                matches_invoice = bool(payment.provider_invoice_id) and response_invoice_id == payment.provider_invoice_id
+                matches_payment = bool(payment.provider_payment_id) and response_payment_id == payment.provider_payment_id
+                if matches_invoice or matches_payment:
+                    selected = (candidate_key_type, candidate_response)
+                    break
+
+        if selected is None:
+            selected = candidate_responses[0]
+
+        key_type, status_response = selected
 
     data = status_response.get("Data") or {}
     invoice_status = data.get("InvoiceStatus") or data.get("PaymentStatus")
