@@ -54,48 +54,6 @@ def create_payment_url(booking, payment):
     payment_method_id = getattr(payment, "selected_payment_method_id", None)
     effective_payment_method_id = payment_method_id or settings.MYFATOORAH_PAYMENT_METHOD_ID
 
-    if effective_payment_method_id is None:
-        payload = {
-            "Order": {
-                "Amount": float(payment.amount),
-                "CurrencyCode": settings.DEFAULT_CURRENCY,
-            },
-            "DisplayCurrencyIso": settings.DEFAULT_CURRENCY,
-            "IntegrationUrls": {
-                "Redirection": settings.MYFATOORAH_HOSTED_REDIRECTION_URL,
-            },
-            "Language": "EN",
-            "Customer": {
-                "Name": booking.requesting_physician.full_name or booking.requesting_physician.email,
-                "Email": booking.requesting_physician.email,
-                "MobileNumber": booking.requesting_physician.phone_number or "00000000",
-            },
-            "MetaData": {
-                "booking_reference": booking.booking_reference,
-            },
-        }
-
-        response = _call_myfatoorah("v3/payments", payload)
-        data = response.get("Data") or response.get("data") or {}
-
-        payment_url = (
-            data.get("PaymentURL")
-            or data.get("PaymentUrl")
-            or data.get("paymentURL")
-            or data.get("paymentUrl")
-            or data.get("url")
-        )
-        if not payment_url:
-            raise MyFatoorahAPIError("MyFatoorah v3 did not return a payment URL.")
-
-        return {
-            "payment_url": payment_url,
-            "provider_invoice_id": str(data.get("InvoiceId") or data.get("invoiceId") or ""),
-            "provider_payment_id": str(data.get("PaymentId") or data.get("paymentId") or ""),
-            "raw_request": payload,
-            "raw_response": response,
-        }
-
     payload = {
         "CustomerName": booking.requesting_physician.full_name or booking.requesting_physician.email,
         "DisplayCurrencyIso": settings.DEFAULT_CURRENCY,
@@ -109,24 +67,67 @@ def create_payment_url(booking, payment):
         "CustomerReference": booking.booking_reference,
         "UserDefinedField": booking.booking_reference,
     }
+    payload["PaymentMethodId"] = int(effective_payment_method_id) if effective_payment_method_id is not None else 0
 
-    # If no method is forced, MyFatoorah hosted page will present available methods.
-    if effective_payment_method_id is not None:
-        payload["PaymentMethodId"] = int(effective_payment_method_id)
+    try:
+        response = _call_myfatoorah("v2/ExecutePayment", payload)
+        data = response.get("Data") or {}
 
-    response = _call_myfatoorah("v2/ExecutePayment", payload)
-    data = response.get("Data") or {}
+        payment_url = data.get("PaymentURL")
+        if payment_url:
+            return {
+                "payment_url": payment_url,
+                "provider_invoice_id": str(data.get("InvoiceId") or ""),
+                "provider_payment_id": str(data.get("PaymentId") or ""),
+                "raw_request": payload,
+                "raw_response": response,
+            }
 
-    payment_url = data.get("PaymentURL")
-    if not payment_url:
+        if effective_payment_method_id is not None:
+            raise MyFatoorahAPIError("MyFatoorah did not return a payment URL.")
+    except MyFatoorahAPIError:
+        if effective_payment_method_id is not None:
+            raise
+
+    fallback_payload = {
+        "Order": {
+            "Amount": float(payment.amount),
+            "CurrencyCode": settings.DEFAULT_CURRENCY,
+        },
+        "DisplayCurrencyIso": settings.DEFAULT_CURRENCY,
+        "IntegrationUrls": {
+            "Redirection": settings.MYFATOORAH_HOSTED_REDIRECTION_URL,
+        },
+        "Language": "EN",
+        "Customer": {
+            "Name": booking.requesting_physician.full_name or booking.requesting_physician.email,
+            "Email": booking.requesting_physician.email,
+            "MobileNumber": booking.requesting_physician.phone_number or "00000000",
+        },
+        "MetaData": {
+            "booking_reference": booking.booking_reference,
+        },
+    }
+
+    fallback_response = _call_myfatoorah("v3/payments", fallback_payload)
+    fallback_data = fallback_response.get("Data") or fallback_response.get("data") or {}
+
+    fallback_payment_url = (
+        fallback_data.get("PaymentURL")
+        or fallback_data.get("PaymentUrl")
+        or fallback_data.get("paymentURL")
+        or fallback_data.get("paymentUrl")
+        or fallback_data.get("url")
+    )
+    if not fallback_payment_url:
         raise MyFatoorahAPIError("MyFatoorah did not return a payment URL.")
 
     return {
-        "payment_url": payment_url,
-        "provider_invoice_id": str(data.get("InvoiceId") or ""),
-        "provider_payment_id": str(data.get("PaymentId") or ""),
-        "raw_request": payload,
-        "raw_response": response,
+        "payment_url": fallback_payment_url,
+        "provider_invoice_id": str(fallback_data.get("InvoiceId") or fallback_data.get("invoiceId") or ""),
+        "provider_payment_id": str(fallback_data.get("PaymentId") or fallback_data.get("paymentId") or ""),
+        "raw_request": fallback_payload,
+        "raw_response": fallback_response,
     }
 
 
