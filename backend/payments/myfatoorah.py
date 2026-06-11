@@ -121,7 +121,10 @@ def create_payment_url(booking, payment):
         },
         "DisplayCurrencyIso": settings.DEFAULT_CURRENCY,
         "IntegrationUrls": {
-            "Redirection": settings.MYFATOORAH_HOSTED_REDIRECTION_URL,
+            "Redirection": _append_query_params(
+                settings.MYFATOORAH_HOSTED_REDIRECTION_URL,
+                {"bookingReference": booking.booking_reference},
+            ),
         },
         "Language": "EN",
         "Customer": {
