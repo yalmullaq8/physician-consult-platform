@@ -54,6 +54,48 @@ def create_payment_url(booking, payment):
     payment_method_id = getattr(payment, "selected_payment_method_id", None)
     effective_payment_method_id = payment_method_id or settings.MYFATOORAH_PAYMENT_METHOD_ID
 
+    if effective_payment_method_id is None:
+        payload = {
+            "Order": {
+                "Amount": float(payment.amount),
+                "CurrencyCode": settings.DEFAULT_CURRENCY,
+            },
+            "DisplayCurrencyIso": settings.DEFAULT_CURRENCY,
+            "IntegrationUrls": {
+                "Redirection": settings.MYFATOORAH_HOSTED_REDIRECTION_URL,
+            },
+            "Language": "EN",
+            "Customer": {
+                "Name": booking.requesting_physician.full_name or booking.requesting_physician.email,
+                "Email": booking.requesting_physician.email,
+                "MobileNumber": booking.requesting_physician.phone_number or "00000000",
+            },
+            "MetaData": {
+                "booking_reference": booking.booking_reference,
+            },
+        }
+
+        response = _call_myfatoorah("v3/payments", payload)
+        data = response.get("Data") or response.get("data") or {}
+
+        payment_url = (
+            data.get("PaymentURL")
+            or data.get("PaymentUrl")
+            or data.get("paymentURL")
+            or data.get("paymentUrl")
+            or data.get("url")
+        )
+        if not payment_url:
+            raise MyFatoorahAPIError("MyFatoorah v3 did not return a payment URL.")
+
+        return {
+            "payment_url": payment_url,
+            "provider_invoice_id": str(data.get("InvoiceId") or data.get("invoiceId") or ""),
+            "provider_payment_id": str(data.get("PaymentId") or data.get("paymentId") or ""),
+            "raw_request": payload,
+            "raw_response": response,
+        }
+
     payload = {
         "CustomerName": booking.requesting_physician.full_name or booking.requesting_physician.email,
         "DisplayCurrencyIso": settings.DEFAULT_CURRENCY,
