@@ -77,20 +77,31 @@ def create_and_send_notification(
     dedupe_key: str | None = None,
     metadata: dict | None = None,
 ):
+    log = None
     if dedupe_key:
         existing = NotificationLog.objects.filter(dedupe_key=dedupe_key).first()
         if existing:
-            return existing
+            # Already delivered successfully - nothing more to do.
+            if existing.status == NotificationLog.STATUS_SENT:
+                return existing
+            # A prior attempt failed (or is still pending). Retry sending on the
+            # same log row instead of short-circuiting forever.
+            log = existing
+            log.subject = subject
+            log.body = body
+            if metadata:
+                log.metadata = {**(log.metadata or {}), **metadata}
 
-    log = NotificationLog.objects.create(
-        recipient=recipient,
-        booking=booking,
-        notification_type=notification_type,
-        subject=subject,
-        body=body,
-        dedupe_key=dedupe_key,
-        metadata=metadata or {},
-    )
+    if log is None:
+        log = NotificationLog.objects.create(
+            recipient=recipient,
+            booking=booking,
+            notification_type=notification_type,
+            subject=subject,
+            body=body,
+            dedupe_key=dedupe_key,
+            metadata=metadata or {},
+        )
 
     try:
         provider_message_id = _send_email(log)
@@ -98,12 +109,24 @@ def create_and_send_notification(
         log.sent_at = timezone.now()
         log.failed_at = None
         log.provider_message_id = provider_message_id
+        log.metadata = {k: v for k, v in (log.metadata or {}).items() if k != "error"}
     except Exception as exc:
         log.status = NotificationLog.STATUS_FAILED
         log.failed_at = timezone.now()
-        log.metadata = {**log.metadata, "error": str(exc)}
+        log.metadata = {**(log.metadata or {}), "error": str(exc)}
 
-    log.save(update_fields=["status", "sent_at", "failed_at", "provider_message_id", "metadata", "updated_at"])
+    log.save(
+        update_fields=[
+            "status",
+            "subject",
+            "body",
+            "sent_at",
+            "failed_at",
+            "provider_message_id",
+            "metadata",
+            "updated_at",
+        ]
+    )
     return log
 
 
