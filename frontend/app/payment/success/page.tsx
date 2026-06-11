@@ -9,6 +9,8 @@ interface PageProps {
     invoiceId?: string;
     InvoiceId?: string;
     Id?: string;
+    bookingReference?: string;
+    booking_reference?: string;
   }>;
 }
 
@@ -53,9 +55,10 @@ export default async function PaymentSuccessPage({ searchParams }: PageProps) {
     params.InvoiceId ??
     params.Id ??
     "";
+  const bookingReference = params.bookingReference ?? params.booking_reference ?? "";
 
   const verification = paymentIdentifier
-    ? await verifyMyFatoorahCallback(paymentIdentifier)
+    ? await verifyMyFatoorahCallback(paymentIdentifier, bookingReference)
     : {
         success: false,
         errorMessage:
@@ -63,6 +66,7 @@ export default async function PaymentSuccessPage({ searchParams }: PageProps) {
       };
 
   const ui = getStatusUI(verification.data?.payment_status);
+  const isPaid = (verification.data?.payment_status ?? "").toLowerCase() === "paid";
 
   return (
     <div className="container-shell flex flex-1 items-center justify-center py-14 md:py-20">
@@ -100,12 +104,21 @@ export default async function PaymentSuccessPage({ searchParams }: PageProps) {
           >
             Back to Home
           </Link>
-          <Link
-            href="/payment/error"
-            className="rounded-xl border border-[#bfcabb] bg-white px-5 py-3 text-sm font-semibold text-[#00501e] transition hover:bg-[#eef4ee]"
-          >
-            Go to Payment Help
-          </Link>
+          {isPaid ? (
+            <Link
+              href="/dashboard"
+              className="rounded-xl border border-[#bfcabb] bg-white px-5 py-3 text-sm font-semibold text-[#00501e] transition hover:bg-[#eef4ee]"
+            >
+              Go to Dashboard
+            </Link>
+          ) : (
+            <Link
+              href="/payment/error"
+              className="rounded-xl border border-[#bfcabb] bg-white px-5 py-3 text-sm font-semibold text-[#00501e] transition hover:bg-[#eef4ee]"
+            >
+              Go to Payment Help
+            </Link>
+          )}
         </div>
       </section>
     </div>

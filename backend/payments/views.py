@@ -54,6 +54,10 @@ class MyFatoorahCallbackView(APIView):
 	permission_classes = [permissions.AllowAny]
 
 	def get(self, request):
+		booking_reference = (
+			request.query_params.get("bookingReference")
+			or request.query_params.get("booking_reference")
+		)
 		payment_id = (
 			request.query_params.get("paymentId")
 			or request.query_params.get("PaymentId")
@@ -64,27 +68,36 @@ class MyFatoorahCallbackView(APIView):
 		base_url = settings.FRONTEND_BASE_URL.rstrip("/")
 
 		if not payment_id:
-			query = urlencode({"error": "Missing payment identifier in callback."})
-			return HttpResponseRedirect(f"{base_url}/payment/error?{query}")
+			return Response(
+				{
+					"success": True,
+					"message": "Callback endpoint is reachable. Awaiting payment identifier.",
+				},
+				status=status.HTTP_200_OK,
+			)
 
 		try:
-			confirm_myfatoorah_payment(payment_id)
+			confirm_myfatoorah_payment(payment_id, booking_reference=booking_reference)
 		except PaymentServiceError as exc:
-			query = urlencode({
-				"paymentId": payment_id,
-				"code": exc.code,
-				"error": exc.message,
-			})
-			return HttpResponseRedirect(f"{base_url}/payment/error?{query}")
+			query = {"paymentId": payment_id, "code": exc.code, "error": exc.message}
+			if booking_reference:
+				query["bookingReference"] = booking_reference
+			return HttpResponseRedirect(f"{base_url}/payment/success?{urlencode(query)}")
 
-		query = urlencode({"paymentId": payment_id})
-		return HttpResponseRedirect(f"{base_url}/payment/success?{query}")
+		query = {"paymentId": payment_id}
+		if booking_reference:
+			query["bookingReference"] = booking_reference
+		return HttpResponseRedirect(f"{base_url}/payment/success?{urlencode(query)}")
 
 
 class MyFatoorahConfirmView(APIView):
 	permission_classes = [permissions.AllowAny]
 
 	def get(self, request):
+		booking_reference = (
+			request.query_params.get("bookingReference")
+			or request.query_params.get("booking_reference")
+		)
 		payment_id = (
 			request.query_params.get("paymentId")
 			or request.query_params.get("PaymentId")
@@ -103,7 +116,7 @@ class MyFatoorahConfirmView(APIView):
 			)
 
 		try:
-			payment = confirm_myfatoorah_payment(payment_id)
+			payment = confirm_myfatoorah_payment(payment_id, booking_reference=booking_reference)
 		except PaymentServiceError as exc:
 			return Response(
 				{

@@ -26,6 +26,8 @@ class Specialty(models.Model):
 
 	class Meta:
 		ordering = ["display_order", "name"]
+		verbose_name = "Specialty"
+		verbose_name_plural = "Specialties"
 
 	def save(self, *args, **kwargs):
 		if not self.slug:
@@ -99,6 +101,8 @@ class PhysicianAvailability(models.Model):
 
 	class Meta:
 		ordering = ["physician", "weekday", "start_time"]
+		verbose_name = "Physician Availability"
+		verbose_name_plural = "Physician Availabilities"
 
 	def clean(self):
 		if self.start_time >= self.end_time:

@@ -152,6 +152,7 @@ Key values:
 - `REDIS_URL`
 - `FRONTEND_BASE_URL`
 - `BACKEND_BASE_URL`
+- `VIDEO_CONFERENCE_PLACEHOLDER_BASE_URL`
 - `USE_CLOUDINARY`
 - `CLOUDINARY_CLOUD_NAME`
 - `CLOUDINARY_API_KEY`
@@ -159,6 +160,19 @@ Key values:
 - `MYFATOORAH_*`
 - `MYFATOORAH_HOSTED_REDIRECTION_URL`
 - SMTP/Email settings
+
+For email delivery, two modes are supported:
+
+- `EMAIL_PROVIDER=smtp` (default)
+- `EMAIL_PROVIDER=resend` (recommended on Railway if SMTP ports are blocked)
+
+Resend mode variables:
+
+- `RESEND_API_KEY`
+- `RESEND_API_URL` (default: `https://api.resend.com/emails`)
+- `DEFAULT_FROM_EMAIL` (must be a verified sender/domain in Resend)
+
+If Railway cannot reach SMTP ports (for example errors like `Network is unreachable` on port 587/465), switch to Resend mode.
 
 ### Cloudinary Media Storage
 
@@ -223,3 +237,107 @@ Expected setup:
 - Build command: `cd frontend && npm run build`
 
 Set the frontend environment variables in Vercel to match `frontend/.env.local`, especially `NEXT_PUBLIC_API_BASE_URL` and `NEXT_PUBLIC_SITE_URL`.
+
+## 7) Railway Backend + Celery Deploy
+
+Deploy backend runtime as three separate Railway services from the same repository:
+
+- `backend` (Django web)
+- `celery-worker`
+- `beat`
+
+All three should use the same source and image build settings.
+
+### Service Build Configuration (all three)
+
+- Root directory: `backend`
+- Builder: Dockerfile
+- Dockerfile path: `backend/Dockerfile`
+
+Do not leave the root directory empty for worker/beat. If root directory is `null`, Railway may try a Railpack build from repo root and fail before app startup.
+
+### Service Start Commands
+
+- `backend`: use Dockerfile default command (gunicorn)
+- `celery-worker`:
+
+```bash
+celery -A config worker --loglevel=info
+```
+
+- `beat`:
+
+```bash
+celery -A config beat --loglevel=info
+```
+
+### Public Networking
+
+- Enable public domain only for `backend`.
+- Keep `celery-worker` and `beat` private (no public domain needed).
+
+### Environment Variables Strategy
+
+Use shared variables for common app settings/secrets, and service-scoped variables for runtime connection references.
+
+Recommended shared variables:
+
+- `DJANGO_SECRET_KEY`
+- `DJANGO_DEBUG=False`
+- `DJANGO_ALLOWED_HOSTS`
+- `FRONTEND_BASE_URL`
+- `BACKEND_BASE_URL`
+- `CORS_ALLOWED_ORIGINS`
+- `CSRF_TRUSTED_ORIGINS`
+- `USE_CLOUDINARY`
+- `CLOUDINARY_*`
+- `MYFATOORAH_*`
+- `EMAIL_*`
+- `DEFAULT_FROM_EMAIL`
+
+Recommended service-scoped variables (set on `backend`, `celery-worker`, `beat`):
+
+- `DATABASE_URL=${{Postgres.DATABASE_URL}}`
+- `REDIS_URL=${{Redis.REDIS_URL}}`
+
+Important: do not wrap Railway variable values in quotes.
+
+Correct:
+
+```txt
+DJANGO_DEBUG=False
+DATABASE_URL=${{Postgres.DATABASE_URL}}
+REDIS_URL=${{Redis.REDIS_URL}}
+```
+
+Incorrect:
+
+```txt
+DJANGO_DEBUG="False"
+DATABASE_URL="${{Postgres.DATABASE_URL}}"
+REDIS_URL="${{Redis.REDIS_URL}}"
+```
+
+Quoted values can break URL parsing and cause startup failures like `dj_database_url.UnknownSchemeError`.
+
+### Deploy Order
+
+1. Deploy `backend`.
+2. Confirm web health and run migrations.
+3. Deploy `celery-worker`.
+4. Deploy `beat`.
+
+### Post-Deploy Checks
+
+- `backend` logs show gunicorn listening and HTTP requests.
+- `celery-worker` logs show broker connection and worker ready.
+- `beat` logs show scheduler startup and periodic task dispatches.
+
+### Common Failure Fixes
+
+If `beat` fails with Railpack/build-scheduling output only:
+
+1. Set root directory to `backend`.
+2. Switch builder to Dockerfile.
+3. Ensure dockerfile path is `backend/Dockerfile`.
+4. Redeploy `beat`.

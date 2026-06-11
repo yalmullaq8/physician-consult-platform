@@ -1,5 +1,6 @@
 import json
 from urllib import error, request
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 from django.conf import settings
 
@@ -22,6 +23,16 @@ def _build_headers():
         "Content-Type": "application/json",
         "Accept": "application/json",
     }
+
+
+def _append_query_params(url: str, params: dict[str, str]) -> str:
+    split = urlsplit(url)
+    query = dict(parse_qsl(split.query, keep_blank_values=True))
+    for key, value in params.items():
+        value_text = str(value).strip()
+        if value_text:
+            query[key] = value_text
+    return urlunsplit((split.scheme, split.netloc, split.path, urlencode(query), split.fragment))
 
 
 def _call_myfatoorah(endpoint: str, payload: dict):
@@ -54,6 +65,15 @@ def create_payment_url(booking, payment):
     payment_method_id = getattr(payment, "selected_payment_method_id", None)
     effective_payment_method_id = payment_method_id or settings.MYFATOORAH_PAYMENT_METHOD_ID
 
+    callback_url = _append_query_params(
+        settings.MYFATOORAH_CALLBACK_URL,
+        {"bookingReference": booking.booking_reference},
+    )
+    error_url = _append_query_params(
+        settings.MYFATOORAH_ERROR_URL,
+        {"bookingReference": booking.booking_reference},
+    )
+
     payload = {
         "CustomerName": booking.requesting_physician.full_name or booking.requesting_physician.email,
         "DisplayCurrencyIso": settings.DEFAULT_CURRENCY,
@@ -61,8 +81,8 @@ def create_payment_url(booking, payment):
         "CustomerMobile": booking.requesting_physician.phone_number or "00000000",
         "CustomerEmail": booking.requesting_physician.email,
         "InvoiceValue": float(payment.amount),
-        "CallBackUrl": settings.MYFATOORAH_CALLBACK_URL,
-        "ErrorUrl": settings.MYFATOORAH_ERROR_URL,
+        "CallBackUrl": callback_url,
+        "ErrorUrl": error_url,
         "Language": "en",
         "CustomerReference": booking.booking_reference,
         "UserDefinedField": booking.booking_reference,

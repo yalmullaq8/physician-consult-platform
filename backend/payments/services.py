@@ -32,6 +32,30 @@ def _parse_payment_status(status_text: str):
     return Payment.STATUS_PENDING
 
 
+def _extract_status_reference_candidates(data: dict) -> set[str]:
+    candidates: set[str] = set()
+
+    for key in ("CustomerReference", "UserDefinedField", "InvoiceReference", "ReferenceId", "TrackId"):
+        value = data.get(key)
+        if value is None:
+            continue
+        value_text = str(value).strip()
+        if value_text:
+            candidates.add(value_text)
+
+    metadata = data.get("MetaData")
+    if isinstance(metadata, dict):
+        for key in ("booking_reference", "bookingReference"):
+            value = metadata.get(key)
+            if value is None:
+                continue
+            value_text = str(value).strip()
+            if value_text:
+                candidates.add(value_text)
+
+    return candidates
+
+
 @transaction.atomic
 def initiate_myfatoorah_payment(booking: Booking, payment_method_id: int | None = None):
     payment, _ = Payment.objects.select_for_update().get_or_create(
@@ -63,7 +87,7 @@ def initiate_myfatoorah_payment(booking: Booking, payment_method_id: int | None 
         if "RedirectionURL is not valid" in error_text:
             raise PaymentServiceError(
                 "payment_provider_not_configured",
-                "Hosted payment page requires a public MYFATOORAH_HOSTED_REDIRECTION_URL (localhost is not accepted).",
+                "MyFatoorah rejected MYFATOORAH_HOSTED_REDIRECTION_URL. Use a public HTTPS URL that is reachable and does not redirect to localhost/private hosts.",
             ) from exc
         raise PaymentServiceError("payment_failed", "Unable to initialize payment at this time.") from exc
 
@@ -96,7 +120,7 @@ def list_myfatoorah_payment_methods(invoice_amount: float):
 
 
 @transaction.atomic
-def confirm_myfatoorah_payment(payment_identifier):
+def confirm_myfatoorah_payment(payment_identifier, booking_reference: str | None = None):
     key_type = "InvoiceId"
     status_response = None
     payment = Payment.objects.select_for_update().filter(
@@ -144,6 +168,16 @@ def confirm_myfatoorah_payment(payment_identifier):
                 provider=Payment.PROVIDER_MYFATOORAH,
                 provider_payment_id=resolved_payment_id,
             ).first()
+
+        if not payment and booking_reference:
+            payment_candidate = Payment.objects.select_for_update().filter(
+                provider=Payment.PROVIDER_MYFATOORAH,
+                booking__booking_reference=booking_reference,
+            ).first()
+            if payment_candidate:
+                status_reference_candidates = _extract_status_reference_candidates(data)
+                if booking_reference in status_reference_candidates or not status_reference_candidates:
+                    payment = payment_candidate
 
         if not payment:
             raise PaymentServiceError("booking_not_found", "Payment record not found.")

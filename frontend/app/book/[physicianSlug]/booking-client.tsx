@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
@@ -369,42 +368,33 @@ export default function BookingClient({ physician }: BookingClientProps) {
         </section>
 
         <aside className="space-y-4">
-          <div className="surface-card overflow-hidden p-0">
-            <Image
-              src="/stitch/book-consultation.webp"
-              alt="Stitch reference for booking screen"
-              width={780}
-              height={3790}
-              className="h-44 w-full object-cover object-top"
-            />
-            <div className="p-4">
-              <p className="text-xs font-semibold tracking-[0.16em] text-[#3f493e] uppercase">
-                Booking Summary
+          <div className="surface-card p-4 md:p-5">
+            <p className="text-xs font-semibold tracking-[0.16em] text-[#3f493e] uppercase">
+              Booking Summary
+            </p>
+            <div className="mt-3 space-y-2 text-sm text-[#3f493e]">
+              <p>
+                Date: <span className="font-semibold text-[#1b1b1b]">{formatLongDate(selectedDate)}</span>
               </p>
-              <div className="mt-3 space-y-2 text-sm text-[#3f493e]">
-                <p>
-                  Date: <span className="font-semibold text-[#1b1b1b]">{formatLongDate(selectedDate)}</span>
-                </p>
-                <p>
-                  Time: <span className="font-semibold text-[#1b1b1b]">
-                    {selectedSlot ? formatSlotTime(selectedSlot.start) : "Select a slot"}
-                  </span>
-                </p>
-                <p>
-                  Fee: <span className="font-semibold text-[#1b1b1b]">
-                    {formatPriceNoDecimals(physician.consultation_price)}
-                  </span>
-                </p>
-              </div>
-              <button
-                type="button"
-                disabled={isSubmitting}
-                onClick={handleConfirmBooking}
-                className="mt-4 w-full rounded-xl bg-[#00501e] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#006b2b] disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {isSubmitting ? "Creating booking..." : "Confirm and Pay"}
-              </button>
+              <p>
+                Time: <span className="font-semibold text-[#1b1b1b]">
+                  {selectedSlot ? formatSlotTime(selectedSlot.start) : "Select a slot"}
+                </span>
+              </p>
+              <p>
+                Fee: <span className="font-semibold text-[#1b1b1b]">
+                  {formatPriceNoDecimals(physician.consultation_price)}
+                </span>
+              </p>
             </div>
+            <button
+              type="button"
+              disabled={isSubmitting}
+              onClick={handleConfirmBooking}
+              className="mt-4 w-full rounded-xl bg-[#00501e] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#006b2b] disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {isSubmitting ? "Creating booking..." : "Confirm and Pay"}
+            </button>
           </div>
         </aside>
       </div>

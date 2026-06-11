@@ -47,12 +47,12 @@ export default async function PhysicianDetailPage({ params }: PageProps) {
       </Link>
 
       <section className="overflow-hidden rounded-2xl border border-[#bfcabb] bg-white shadow-[0_14px_40px_rgba(28,67,96,0.09)]">
-        <div className="h-36 bg-gradient-to-r from-[#00501e] to-[#14b8a6] md:h-44" />
+        <div className="h-28 bg-gradient-to-r from-[#00501e] to-[#14b8a6] md:h-32" />
 
         <div className="px-5 pb-7 md:px-8 md:pb-9">
-          <div className="-mt-14 flex flex-col gap-5 md:-mt-16 md:flex-row md:items-end md:justify-between">
-            <div className="flex items-end gap-4">
-              <div className="overflow-hidden rounded-full border-4 border-white bg-white shadow-lg">
+          <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
+            <div className="flex items-start gap-4 pt-10 md:pt-12">
+              <div className="-mt-24 overflow-hidden rounded-full border-4 border-white bg-white shadow-lg md:-mt-28">
                 {getPhysicianPhotoUrl(physician.profile_photo) ? (
                   <img
                     src={getPhysicianPhotoUrl(physician.profile_photo) ?? ""}
@@ -70,7 +70,7 @@ export default async function PhysicianDetailPage({ params }: PageProps) {
                 )}
               </div>
 
-              <div className="pb-2">
+              <div className="pt-1 pb-2 md:pt-2">
                 <p className="inline-flex rounded-full bg-[#eef4ee] px-3 py-1 text-xs font-semibold tracking-wide text-[#3f493e] uppercase">
                   {physician.specialty.name}
                 </p>

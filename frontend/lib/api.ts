@@ -216,6 +216,7 @@ export async function createBooking(payload: CreateBookingPayload): Promise<{
 
 export async function verifyMyFatoorahCallback(
   paymentIdentifier: string,
+  bookingReference?: string,
 ): Promise<{ success: boolean; data?: PaymentCallbackResult; errorMessage?: string }> {
   if (!paymentIdentifier) {
     return {
@@ -225,7 +226,11 @@ export async function verifyMyFatoorahCallback(
   }
 
   try {
-    const query = new URLSearchParams({ paymentId: paymentIdentifier }).toString();
+    const params = new URLSearchParams({ paymentId: paymentIdentifier });
+    if (bookingReference) {
+      params.set("bookingReference", bookingReference);
+    }
+    const query = params.toString();
     const response = await fetch(buildUrl(`/payments/myfatoorah/confirm/?${query}`), {
       cache: "no-store",
     });
