@@ -225,29 +225,58 @@ export async function verifyMyFatoorahCallback(
     };
   }
 
-  try {
-    const params = new URLSearchParams({ paymentId: paymentIdentifier });
-    if (bookingReference) {
-      params.set("bookingReference", bookingReference);
-    }
-    const query = params.toString();
-    const response = await fetch(buildUrl(`/payments/myfatoorah/confirm/?${query}`), {
-      cache: "no-store",
-    });
+  const params = new URLSearchParams({ paymentId: paymentIdentifier });
+  if (bookingReference) {
+    params.set("bookingReference", bookingReference);
+  }
+  const query = params.toString();
+  const endpoint = buildUrl(`/payments/myfatoorah/confirm/?${query}`);
 
-    const body = (await response.json()) as ApiEnvelope<PaymentCallbackResult>;
-    if (!response.ok || !body.success || !body.data) {
+  const attemptVerification = async () => {
+    const response = await fetch(endpoint, { cache: "no-store" });
+
+    let body: ApiEnvelope<PaymentCallbackResult> | null = null;
+    try {
+      body = (await response.json()) as ApiEnvelope<PaymentCallbackResult>;
+    } catch {
+      body = null;
+    }
+
+    if (!response.ok || !body?.success || !body?.data) {
+      const fallback =
+        response.status >= 500
+          ? "Payment verification is temporarily unavailable. Please refresh in a moment."
+          : "Payment verification failed.";
       return {
         success: false,
-        errorMessage: body.error?.message ?? "Payment verification failed.",
+        errorMessage: body?.error?.message ?? fallback,
       };
     }
 
-    return { success: true, data: body.data };
+    return { success: true as const, data: body.data };
+  };
+
+  try {
+    const firstAttempt = await attemptVerification();
+    if (firstAttempt.success) {
+      return firstAttempt;
+    }
+
+    // Retry once for transient provider/network conditions.
+    if ((firstAttempt.errorMessage ?? "").toLowerCase().includes("temporarily unavailable")) {
+      const secondAttempt = await attemptVerification();
+      if (secondAttempt.success) {
+        return secondAttempt;
+      }
+      return secondAttempt;
+    }
+
+    return firstAttempt;
   } catch {
     return {
       success: false,
-      errorMessage: "Could not verify payment status right now.",
+      errorMessage:
+        "Payment verification is temporarily unavailable. Please refresh in a moment.",
     };
   }
 }

@@ -46,6 +46,16 @@ function getStatusUI(paymentStatus: string | undefined) {
   };
 }
 
+function getUnverifiedUI() {
+  return {
+    eyebrow: "Payment Processing",
+    title: "We could not verify payment yet.",
+    toneClass: "text-[#8b6200]",
+    panelClass: "border-[#f2deb2] bg-[#fffaf0]",
+    body: "Payment confirmation may still be in progress. Please refresh this page in a moment.",
+  };
+}
+
 export default async function PaymentSuccessPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const paymentIdentifier =
@@ -65,7 +75,9 @@ export default async function PaymentSuccessPage({ searchParams }: PageProps) {
           "Payment identifier is missing from callback URL. Please contact support if payment was already charged.",
       };
 
-  const ui = getStatusUI(verification.data?.payment_status);
+  const ui = verification.success
+    ? getStatusUI(verification.data?.payment_status)
+    : getUnverifiedUI();
   const isPaid = (verification.data?.payment_status ?? "").toLowerCase() === "paid";
 
   return (
