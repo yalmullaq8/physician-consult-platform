@@ -52,6 +52,9 @@ def _send_email_via_resend(log: NotificationLog):
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json",
             "Accept": "application/json",
+            # Cloudflare in front of api.resend.com blocks the default
+            # "Python-urllib/x.y" agent (Error 1010), so send a normal one.
+            "User-Agent": "physician-consult-platform/1.0",
         },
     )
 
