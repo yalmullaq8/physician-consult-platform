@@ -10,6 +10,7 @@ from rest_framework.views import APIView
 from .services import (
 	PaymentServiceError,
 	confirm_myfatoorah_payment,
+	get_local_myfatoorah_payment,
 	handle_myfatoorah_webhook,
 	list_myfatoorah_payment_methods,
 )
@@ -126,6 +127,18 @@ class MyFatoorahConfirmView(APIView):
 				"Unexpected error in MyFatoorah confirm endpoint.",
 				extra={"payment_id": payment_id, "booking_reference": booking_reference},
 			)
+			fallback_payment = get_local_myfatoorah_payment(payment_id, booking_reference=booking_reference)
+			if fallback_payment:
+				return Response(
+					{
+						"success": True,
+						"data": {
+							"booking_reference": fallback_payment.booking.booking_reference,
+							"payment_status": fallback_payment.status,
+							"booking_status": fallback_payment.booking.status,
+						},
+					}
+				)
 			return Response(
 				{
 					"success": False,

@@ -82,6 +82,10 @@ def _find_local_payment(payment_identifier, booking_reference: str | None = None
     return None
 
 
+def get_local_myfatoorah_payment(payment_identifier, booking_reference: str | None = None):
+    return _find_local_payment(payment_identifier, booking_reference=booking_reference)
+
+
 @transaction.atomic
 def initiate_myfatoorah_payment(booking: Booking, payment_method_id: int | None = None):
     payment, _ = Payment.objects.select_for_update().get_or_create(
