@@ -43,7 +43,7 @@ export default async function PhysicianDetailPage({ params }: PageProps) {
         href="/"
         className="w-fit rounded-full border border-[#bfcabb] bg-white px-4 py-2 text-sm font-semibold text-[#00501e] transition hover:bg-[#eef4ee]"
       >
-        Back to landing
+        Back to homepage
       </Link>
 
       <section className="overflow-hidden rounded-2xl border border-[#bfcabb] bg-white shadow-[0_14px_40px_rgba(28,67,96,0.09)]">

@@ -78,8 +78,7 @@ export default async function Home({ searchParams }: PageProps) {
             Peer Consultations
           </h1>
           <p className="max-w-3xl text-base leading-7 text-[#3f493e] md:text-lg">
-            Connect with leading specialists for high-level clinical guidance,
-            complex case reviews, and collaborative medical insights.
+            Connect with leading specialists for collaborative medical insights.
           </p>
         </section>
 
