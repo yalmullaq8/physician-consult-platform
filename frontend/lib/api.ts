@@ -87,19 +87,28 @@ function getCookie(name: string): string | null {
   return null;
 }
 
-async function ensureCsrfCookie(): Promise<string | null> {
-  const existing = getCookie("csrftoken");
-  if (existing) {
-    return existing;
-  }
-
+async function fetchCsrfToken(): Promise<string | null> {
+  // In a decoupled setup the frontend and backend can live on different
+  // domains, so JavaScript cannot read the csrftoken cookie set by the
+  // backend. The csrf endpoint returns the token in the body for this reason.
   try {
-    await fetch(buildUrl("/auth/csrf/"), {
+    const response = await fetch(buildUrl("/auth/csrf/"), {
       credentials: "include",
       cache: "no-store",
     });
+
+    if (response.ok) {
+      try {
+        const body = (await response.json()) as ApiEnvelope<{ csrf_token?: string }>;
+        if (body?.success && body.data?.csrf_token) {
+          return body.data.csrf_token;
+        }
+      } catch {
+        // Ignore body parse errors and fall back to the cookie.
+      }
+    }
   } catch {
-    return null;
+    return getCookie("csrftoken");
   }
 
   return getCookie("csrftoken");
@@ -109,7 +118,7 @@ export async function loginUser(payload: {
   email: string;
   password: string;
 }): Promise<{ success: boolean; data?: AuthUser; errorMessage?: string }> {
-  const csrfToken = await ensureCsrfCookie();
+  const csrfToken = await fetchCsrfToken();
   if (!csrfToken) {
     return {
       success: false,
@@ -157,7 +166,7 @@ export async function loginUser(payload: {
 }
 
 export async function logoutUser(): Promise<{ success: boolean; errorMessage?: string }> {
-  const csrfToken = await ensureCsrfCookie();
+  const csrfToken = await fetchCsrfToken();
   if (!csrfToken) {
     return {
       success: false,
