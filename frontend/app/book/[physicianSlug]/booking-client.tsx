@@ -433,7 +433,7 @@ export default function BookingClient({ physician }: BookingClientProps) {
                   value={requesterCountryOfPractice}
                   onChange={(event) => setRequesterCountryOfPractice(event.target.value)}
                   className="mt-1 w-full rounded-xl border border-[#bfcabb] bg-white px-3 py-2 text-sm text-[#1b1b1b] outline-none ring-[#00501e] transition focus:ring-2"
-                  placeholder="e.g. Kuwait"
+                  placeholder="e.g. USA"
                 />
               </div>
 
@@ -461,7 +461,7 @@ export default function BookingClient({ physician }: BookingClientProps) {
                   value={requesterWhatsappNumber}
                   onChange={(event) => setRequesterWhatsappNumber(event.target.value)}
                   className="mt-1 w-full rounded-xl border border-[#bfcabb] bg-white px-3 py-2 text-sm text-[#1b1b1b] outline-none ring-[#00501e] transition focus:ring-2"
-                  placeholder="+965 XXXXXXXX"
+                  placeholder="+1 XXXXXXXX"
                 />
               </div>
             </div>
