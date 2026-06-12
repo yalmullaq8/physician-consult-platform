@@ -549,23 +549,41 @@ export async function createAvailabilityBlock(payload: {
   end_time: string;
   is_active?: boolean;
 }): Promise<{ success: boolean; data?: AvailabilityBlockAPI; errorMessage?: string }> {
+  const csrfToken = await fetchCsrfToken();
+  if (!csrfToken) {
+    return {
+      success: false,
+      errorMessage: "Could not initialize availability session. Please refresh and try again.",
+    };
+  }
+
   try {
     const response = await fetch(buildUrl("/me/availability/blocks/"), {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrfToken,
+      },
       credentials: "include",
       cache: "no-store",
       body: JSON.stringify({ ...payload, is_active: payload.is_active ?? true }),
     });
 
-    const body = (await response.json()) as ApiEnvelope<AvailabilityBlockAPI>;
-    if (!response.ok || !body.success || !body.data) {
+    let body: unknown = null;
+    try {
+      body = await response.json();
+    } catch {
+      body = null;
+    }
+
+    const envelope = body as ApiEnvelope<AvailabilityBlockAPI> | null;
+    if (!response.ok || !envelope?.success || !envelope?.data) {
       return {
         success: false,
-        errorMessage: body.error?.message ?? "Could not create availability block.",
+        errorMessage: extractErrorMessage(body, "Could not create availability block."),
       };
     }
-    return { success: true, data: body.data };
+    return { success: true, data: envelope.data };
   } catch {
     return { success: false, errorMessage: "Could not reach availability service." };
   }
@@ -574,18 +592,35 @@ export async function createAvailabilityBlock(payload: {
 export async function deleteAvailabilityBlock(
   id: number,
 ): Promise<{ success: boolean; errorMessage?: string }> {
+  const csrfToken = await fetchCsrfToken();
+  if (!csrfToken) {
+    return {
+      success: false,
+      errorMessage: "Could not initialize availability session. Please refresh and try again.",
+    };
+  }
+
   try {
     const response = await fetch(buildUrl(`/me/availability/blocks/${id}/`), {
       method: "DELETE",
+      headers: {
+        "X-CSRFToken": csrfToken,
+      },
       credentials: "include",
       cache: "no-store",
     });
 
     if (!response.ok) {
-      const body = (await response.json()) as ApiEnvelope<{ id: number }>;
+      let body: unknown = null;
+      try {
+        body = await response.json();
+      } catch {
+        body = null;
+      }
+
       return {
         success: false,
-        errorMessage: body.error?.message ?? "Could not delete availability block.",
+        errorMessage: extractErrorMessage(body, "Could not delete availability block."),
       };
     }
 
@@ -604,23 +639,41 @@ export async function updateAvailabilityBlock(
     is_active: boolean;
   }>,
 ): Promise<{ success: boolean; data?: AvailabilityBlockAPI; errorMessage?: string }> {
+  const csrfToken = await fetchCsrfToken();
+  if (!csrfToken) {
+    return {
+      success: false,
+      errorMessage: "Could not initialize availability session. Please refresh and try again.",
+    };
+  }
+
   try {
     const response = await fetch(buildUrl(`/me/availability/blocks/${id}/`), {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrfToken,
+      },
       credentials: "include",
       cache: "no-store",
       body: JSON.stringify(payload),
     });
 
-    const body = (await response.json()) as ApiEnvelope<AvailabilityBlockAPI>;
-    if (!response.ok || !body.success || !body.data) {
+    let body: unknown = null;
+    try {
+      body = await response.json();
+    } catch {
+      body = null;
+    }
+
+    const envelope = body as ApiEnvelope<AvailabilityBlockAPI> | null;
+    if (!response.ok || !envelope?.success || !envelope?.data) {
       return {
         success: false,
-        errorMessage: body.error?.message ?? "Could not update availability block.",
+        errorMessage: extractErrorMessage(body, "Could not update availability block."),
       };
     }
-    return { success: true, data: body.data };
+    return { success: true, data: envelope.data };
   } catch {
     return { success: false, errorMessage: "Could not reach availability service." };
   }
@@ -633,23 +686,41 @@ export async function createAvailabilityException(payload: {
   exception_type: "unavailable" | "extra_available";
   reason?: string;
 }): Promise<{ success: boolean; data?: AvailabilityExceptionAPI; errorMessage?: string }> {
+  const csrfToken = await fetchCsrfToken();
+  if (!csrfToken) {
+    return {
+      success: false,
+      errorMessage: "Could not initialize availability session. Please refresh and try again.",
+    };
+  }
+
   try {
     const response = await fetch(buildUrl("/me/availability/exceptions/"), {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrfToken,
+      },
       credentials: "include",
       cache: "no-store",
       body: JSON.stringify(payload),
     });
 
-    const body = (await response.json()) as ApiEnvelope<AvailabilityExceptionAPI>;
-    if (!response.ok || !body.success || !body.data) {
+    let body: unknown = null;
+    try {
+      body = await response.json();
+    } catch {
+      body = null;
+    }
+
+    const envelope = body as ApiEnvelope<AvailabilityExceptionAPI> | null;
+    if (!response.ok || !envelope?.success || !envelope?.data) {
       return {
         success: false,
-        errorMessage: body.error?.message ?? "Could not create availability exception.",
+        errorMessage: extractErrorMessage(body, "Could not create availability exception."),
       };
     }
-    return { success: true, data: body.data };
+    return { success: true, data: envelope.data };
   } catch {
     return { success: false, errorMessage: "Could not reach availability service." };
   }
@@ -658,18 +729,35 @@ export async function createAvailabilityException(payload: {
 export async function deleteAvailabilityException(
   id: number,
 ): Promise<{ success: boolean; errorMessage?: string }> {
+  const csrfToken = await fetchCsrfToken();
+  if (!csrfToken) {
+    return {
+      success: false,
+      errorMessage: "Could not initialize availability session. Please refresh and try again.",
+    };
+  }
+
   try {
     const response = await fetch(buildUrl(`/me/availability/exceptions/${id}/`), {
       method: "DELETE",
+      headers: {
+        "X-CSRFToken": csrfToken,
+      },
       credentials: "include",
       cache: "no-store",
     });
 
     if (!response.ok) {
-      const body = (await response.json()) as ApiEnvelope<{ id: number }>;
+      let body: unknown = null;
+      try {
+        body = await response.json();
+      } catch {
+        body = null;
+      }
+
       return {
         success: false,
-        errorMessage: body.error?.message ?? "Could not delete availability exception.",
+        errorMessage: extractErrorMessage(body, "Could not delete availability exception."),
       };
     }
 
@@ -689,23 +777,41 @@ export async function updateAvailabilityException(
     reason: string;
   }>,
 ): Promise<{ success: boolean; data?: AvailabilityExceptionAPI; errorMessage?: string }> {
+  const csrfToken = await fetchCsrfToken();
+  if (!csrfToken) {
+    return {
+      success: false,
+      errorMessage: "Could not initialize availability session. Please refresh and try again.",
+    };
+  }
+
   try {
     const response = await fetch(buildUrl(`/me/availability/exceptions/${id}/`), {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrfToken,
+      },
       credentials: "include",
       cache: "no-store",
       body: JSON.stringify(payload),
     });
 
-    const body = (await response.json()) as ApiEnvelope<AvailabilityExceptionAPI>;
-    if (!response.ok || !body.success || !body.data) {
+    let body: unknown = null;
+    try {
+      body = await response.json();
+    } catch {
+      body = null;
+    }
+
+    const envelope = body as ApiEnvelope<AvailabilityExceptionAPI> | null;
+    if (!response.ok || !envelope?.success || !envelope?.data) {
       return {
         success: false,
-        errorMessage: body.error?.message ?? "Could not update availability exception.",
+        errorMessage: extractErrorMessage(body, "Could not update availability exception."),
       };
     }
-    return { success: true, data: body.data };
+    return { success: true, data: envelope.data };
   } catch {
     return { success: false, errorMessage: "Could not reach availability service." };
   }

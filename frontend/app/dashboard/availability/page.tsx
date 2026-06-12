@@ -369,6 +369,12 @@ export default function AvailabilityPage() {
         <section className="surface-card p-5 text-sm text-[#3f493e]">Loading availability...</section>
       ) : null}
 
+      {statusMessage ? (
+        <section className="surface-card border border-[#bfcabb] bg-[#f9fbf8] p-4 text-sm text-[#2d3b2f]">
+          {statusMessage}
+        </section>
+      ) : null}
+
       <section className="grid gap-6 lg:grid-cols-2">
         <div className="surface-card p-5">
           <h2 className="text-lg font-semibold text-[#1b1b1b]">Weekly Availability</h2>
