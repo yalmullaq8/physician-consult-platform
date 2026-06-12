@@ -9,6 +9,15 @@ export interface ApiEnvelope<T> {
   error?: ApiError;
 }
 
+export interface AuthUser {
+  id: number;
+  email: string;
+  full_name: string;
+  phone_number: string;
+  is_active: boolean;
+  is_staff: boolean;
+}
+
 export interface Specialty {
   id: number;
   name: string;

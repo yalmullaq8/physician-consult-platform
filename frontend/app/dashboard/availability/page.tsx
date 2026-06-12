@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import {
@@ -8,6 +9,7 @@ import {
   createAvailabilityException,
   deleteAvailabilityBlock,
   deleteAvailabilityException,
+  getCurrentUser,
   getMyAvailability,
   updateAvailabilityBlock,
   updateAvailabilityException,
@@ -31,6 +33,7 @@ function sortBlocks(blocks: WeeklyAvailabilityBlock[]) {
 }
 
 export default function AvailabilityPage() {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [statusMessage, setStatusMessage] = useState("");
   const [blocks, setBlocks] = useState<WeeklyAvailabilityBlock[]>([]);
@@ -62,6 +65,16 @@ export default function AvailabilityPage() {
     let mounted = true;
 
     async function loadAvailability() {
+      const auth = await getCurrentUser();
+      if (!mounted) {
+        return;
+      }
+
+      if (!auth.success) {
+        router.replace("/login?next=/dashboard/availability");
+        return;
+      }
+
       setIsLoading(true);
       const response = await getMyAvailability();
       if (!mounted) {
@@ -101,7 +114,7 @@ export default function AvailabilityPage() {
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [router]);
 
   async function addWeeklyBlock() {
     if (startTime >= endTime) {

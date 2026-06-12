@@ -217,7 +217,7 @@ export default function BookingClient({ physician }: BookingClientProps) {
           Back to profile
         </Link>
         <p className="text-xs font-semibold tracking-[0.16em] text-[#3f493e] uppercase">
-          Stitch source synced: Book Consultation
+          Book Consultation
         </p>
       </div>
 

@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
-import { getMyBookings } from "@/lib/api";
+import { getCurrentUser, getMyBookings } from "@/lib/api";
 import { BookingRecord } from "@/types/api";
 
 type BookingBucket = "upcoming" | "past";
@@ -85,6 +86,7 @@ function BookingCard({ booking }: { booking: BookingRecord }) {
 }
 
 export default function DashboardPage() {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [activeBucket, setActiveBucket] = useState<BookingBucket>("upcoming");
   const [bookings, setBookings] = useState<BookingRecord[]>([]);
@@ -93,7 +95,17 @@ export default function DashboardPage() {
   useEffect(() => {
     let mounted = true;
 
-    async function loadBookings() {
+    async function loadDashboard() {
+      const auth = await getCurrentUser();
+      if (!mounted) {
+        return;
+      }
+
+      if (!auth.success) {
+        router.replace("/login?next=/dashboard");
+        return;
+      }
+
       setIsLoading(true);
       const response = await getMyBookings();
       if (!mounted) {
@@ -105,11 +117,11 @@ export default function DashboardPage() {
       setIsLoading(false);
     }
 
-    loadBookings();
+    loadDashboard();
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [router]);
 
   const { upcoming, past } = useMemo(() => splitBookings(bookings), [bookings]);
   const activeList = activeBucket === "upcoming" ? upcoming : past;

@@ -3,6 +3,7 @@ import {
   AvailabilityBlockAPI,
   AvailabilityExceptionAPI,
   ApiEnvelope,
+  AuthUser,
   BookingRecord,
   CreateBookingPayload,
   CreateBookingResult,
@@ -68,6 +69,168 @@ function extractErrorMessage(body: unknown, fallback: string): string {
   }
 
   return fallback;
+}
+
+function getCookie(name: string): string | null {
+  if (typeof document === "undefined") {
+    return null;
+  }
+
+  const cookies = document.cookie ? document.cookie.split(";") : [];
+  for (const rawCookie of cookies) {
+    const cookie = rawCookie.trim();
+    if (cookie.startsWith(`${name}=`)) {
+      return decodeURIComponent(cookie.slice(name.length + 1));
+    }
+  }
+
+  return null;
+}
+
+async function ensureCsrfCookie(): Promise<string | null> {
+  const existing = getCookie("csrftoken");
+  if (existing) {
+    return existing;
+  }
+
+  try {
+    await fetch(buildUrl("/auth/csrf/"), {
+      credentials: "include",
+      cache: "no-store",
+    });
+  } catch {
+    return null;
+  }
+
+  return getCookie("csrftoken");
+}
+
+export async function loginUser(payload: {
+  email: string;
+  password: string;
+}): Promise<{ success: boolean; data?: AuthUser; errorMessage?: string }> {
+  const csrfToken = await ensureCsrfCookie();
+  if (!csrfToken) {
+    return {
+      success: false,
+      errorMessage: "Could not initialize login session. Please refresh and try again.",
+    };
+  }
+
+  try {
+    const response = await fetch(buildUrl("/auth/login/"), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrfToken,
+      },
+      credentials: "include",
+      cache: "no-store",
+      body: JSON.stringify({
+        email: payload.email.trim().toLowerCase(),
+        password: payload.password,
+      }),
+    });
+
+    let body: unknown = null;
+    try {
+      body = await response.json();
+    } catch {
+      body = null;
+    }
+
+    const envelope = body as ApiEnvelope<AuthUser> | null;
+    if (!response.ok || !envelope?.success || !envelope?.data) {
+      return {
+        success: false,
+        errorMessage: extractErrorMessage(body, "Login failed."),
+      };
+    }
+
+    return { success: true, data: envelope.data };
+  } catch {
+    return {
+      success: false,
+      errorMessage: "Unable to reach authentication service.",
+    };
+  }
+}
+
+export async function logoutUser(): Promise<{ success: boolean; errorMessage?: string }> {
+  const csrfToken = await ensureCsrfCookie();
+  if (!csrfToken) {
+    return {
+      success: false,
+      errorMessage: "Could not initialize logout session.",
+    };
+  }
+
+  try {
+    const response = await fetch(buildUrl("/auth/logout/"), {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": csrfToken,
+      },
+      credentials: "include",
+      cache: "no-store",
+    });
+
+    if (!response.ok) {
+      let body: unknown = null;
+      try {
+        body = await response.json();
+      } catch {
+        body = null;
+      }
+
+      return {
+        success: false,
+        errorMessage: extractErrorMessage(body, "Logout failed."),
+      };
+    }
+
+    return { success: true };
+  } catch {
+    return {
+      success: false,
+      errorMessage: "Unable to reach authentication service.",
+    };
+  }
+}
+
+export async function getCurrentUser(): Promise<{
+  success: boolean;
+  data?: AuthUser;
+  errorMessage?: string;
+}> {
+  try {
+    const response = await fetch(buildUrl("/auth/me/"), {
+      credentials: "include",
+      cache: "no-store",
+    });
+
+    let body: unknown = null;
+    try {
+      body = await response.json();
+    } catch {
+      body = null;
+    }
+
+    const envelope = body as ApiEnvelope<AuthUser> | null;
+    if (!response.ok || !envelope?.success || !envelope?.data) {
+      return {
+        success: false,
+        errorMessage: extractErrorMessage(body, "Not authenticated."),
+      };
+    }
+
+    return { success: true, data: envelope.data };
+  } catch {
+    return {
+      success: false,
+      errorMessage: "Unable to reach authentication service.",
+    };
+  }
 }
 
 async function request<T>(path: string): Promise<T | null> {
