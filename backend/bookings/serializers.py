@@ -7,6 +7,11 @@ class BookingCreateSerializer(serializers.Serializer):
     consulting_physician_id = serializers.IntegerField()
     scheduled_start = serializers.DateTimeField()
     case_summary = serializers.CharField()
+    requester_name = serializers.CharField(max_length=255)
+    requester_specialization = serializers.CharField(max_length=255)
+    requester_country_of_practice = serializers.CharField(max_length=100)
+    requester_email = serializers.EmailField()
+    requester_whatsapp_number = serializers.CharField(max_length=30, required=False, allow_blank=True)
     payment_method_id = serializers.IntegerField(required=False, allow_null=True)
 
 
@@ -26,6 +31,11 @@ class BookingSerializer(serializers.ModelSerializer):
             "scheduled_end",
             "status",
             "case_summary",
+            "requester_name",
+            "requester_specialization",
+            "requester_country_of_practice",
+            "requester_email",
+            "requester_whatsapp_number",
             "meeting_url",
             "cancellation_reason",
             "cancelled_at",

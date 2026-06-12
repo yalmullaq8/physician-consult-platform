@@ -82,6 +82,11 @@ export interface CreateBookingPayload {
   consulting_physician_id: number;
   scheduled_start: string;
   case_summary: string;
+  requester_name: string;
+  requester_specialization: string;
+  requester_country_of_practice: string;
+  requester_email: string;
+  requester_whatsapp_number?: string;
   payment_method_id?: number;
 }
 

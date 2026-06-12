@@ -146,13 +146,22 @@ def send_booking_confirmed_notifications(booking):
     start_local = timezone.localtime(booking.scheduled_start)
     formatted_start = start_local.strftime("%Y-%m-%d %I:%M %p %Z")
     video_link = _build_video_conference_link(booking)
+    requester_details_block = (
+        f"Requester details:\n"
+        f"- Name: {booking.requester_name}\n"
+        f"- Specialization: {booking.requester_specialization}\n"
+        f"- Country of practice: {booking.requester_country_of_practice}\n"
+        f"- Email: {booking.requester_email}\n"
+        f"- WhatsApp: {booking.requester_whatsapp_number or 'Not provided'}"
+    )
 
     requester_subject = f"Booking Confirmed: {booking.booking_reference}"
     requester_body = (
         f"Your consultation booking {booking.booking_reference} is confirmed.\n"
         f"Consulting physician: {booking.consulting_physician.full_name}\n"
         f"Scheduled start: {formatted_start}\n"
-        f"Video conference link: {video_link}"
+        f"Video conference link: {video_link}\n\n"
+        f"{requester_details_block}"
     )
     create_and_send_notification(
         recipient=booking.requesting_physician,
@@ -167,9 +176,10 @@ def send_booking_confirmed_notifications(booking):
     consultant_subject = f"New Confirmed Consultation: {booking.booking_reference}"
     consultant_body = (
         f"A consultation booking {booking.booking_reference} has been confirmed.\n"
-        f"Requesting physician: {booking.requesting_physician.full_name}\n"
+        f"Requesting physician account: {booking.requesting_physician.full_name}\n"
         f"Scheduled start: {formatted_start}\n"
-        f"Video conference link: {video_link}"
+        f"Video conference link: {video_link}\n\n"
+        f"{requester_details_block}"
     )
     create_and_send_notification(
         recipient=booking.consulting_physician,

@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.db.models import Q
 from rest_framework import permissions, status
 from rest_framework.response import Response
@@ -16,16 +15,17 @@ from .services import BookingValidationError, create_pending_booking
 class CreateBookingView(APIView):
 	permission_classes = [permissions.AllowAny]
 
-	def _get_requesting_user(self, request):
+	def _get_requesting_user(self, request, requester_name: str, requester_email: str, requester_whatsapp_number: str):
 		if request.user and request.user.is_authenticated:
 			return request.user
 
-		guest_email = getattr(settings, "PUBLIC_BOOKING_GUEST_EMAIL", "guest.requester@medconsult.local")
-		guest_name = getattr(settings, "PUBLIC_BOOKING_GUEST_NAME", "Guest Requesting Physician")
-
 		guest_user, _ = User.objects.get_or_create(
-			email=guest_email,
-			defaults={"full_name": guest_name, "is_active": True},
+			email=requester_email,
+			defaults={
+				"full_name": requester_name,
+				"phone_number": requester_whatsapp_number,
+				"is_active": True,
+			},
 		)
 		return guest_user
 
@@ -36,6 +36,11 @@ class CreateBookingView(APIView):
 		consulting_physician_id = serializer.validated_data["consulting_physician_id"]
 		scheduled_start = serializer.validated_data["scheduled_start"]
 		case_summary = serializer.validated_data["case_summary"]
+		requester_name = serializer.validated_data["requester_name"]
+		requester_specialization = serializer.validated_data["requester_specialization"]
+		requester_country_of_practice = serializer.validated_data["requester_country_of_practice"]
+		requester_email = serializer.validated_data["requester_email"]
+		requester_whatsapp_number = serializer.validated_data.get("requester_whatsapp_number", "")
 		payment_method_id = serializer.validated_data.get("payment_method_id")
 
 		try:
@@ -53,12 +58,22 @@ class CreateBookingView(APIView):
 			)
 
 		try:
-			requesting_user = self._get_requesting_user(request)
+			requesting_user = self._get_requesting_user(
+				request,
+				requester_name=requester_name,
+				requester_email=requester_email,
+				requester_whatsapp_number=requester_whatsapp_number,
+			)
 			booking = create_pending_booking(
 				requesting_user=requesting_user,
 				consulting_physician_profile=consulting_profile,
 				scheduled_start=scheduled_start,
 				case_summary=case_summary,
+				requester_name=requester_name,
+				requester_specialization=requester_specialization,
+				requester_country_of_practice=requester_country_of_practice,
+				requester_email=requester_email,
+				requester_whatsapp_number=requester_whatsapp_number,
 			)
 		except BookingValidationError as exc:
 			return Response(

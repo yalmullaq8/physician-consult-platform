@@ -80,11 +80,11 @@ def create_payment_url(booking, payment):
     )
 
     payload = {
-        "CustomerName": booking.requesting_physician.full_name or booking.requesting_physician.email,
+        "CustomerName": booking.requester_name,
         "DisplayCurrencyIso": settings.DEFAULT_CURRENCY,
         "MobileCountryCode": "+965",
-        "CustomerMobile": booking.requesting_physician.phone_number or "00000000",
-        "CustomerEmail": booking.requesting_physician.email,
+        "CustomerMobile": booking.requester_whatsapp_number or booking.requesting_physician.phone_number or "00000000",
+        "CustomerEmail": booking.requester_email,
         "InvoiceValue": float(payment.amount),
         "CallBackUrl": callback_url,
         "ErrorUrl": error_url,
@@ -128,9 +128,9 @@ def create_payment_url(booking, payment):
         },
         "Language": "EN",
         "Customer": {
-            "Name": booking.requesting_physician.full_name or booking.requesting_physician.email,
-            "Email": booking.requesting_physician.email,
-            "MobileNumber": booking.requesting_physician.phone_number or "00000000",
+            "Name": booking.requester_name,
+            "Email": booking.requester_email,
+            "MobileNumber": booking.requester_whatsapp_number or booking.requesting_physician.phone_number or "00000000",
         },
         "MetaData": {
             "booking_reference": booking.booking_reference,

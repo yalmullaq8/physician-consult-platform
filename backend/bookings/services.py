@@ -23,7 +23,17 @@ def _generate_booking_reference():
 
 
 @transaction.atomic
-def create_pending_booking(requesting_user, consulting_physician_profile: PhysicianProfile, scheduled_start, case_summary):
+def create_pending_booking(
+    requesting_user,
+    consulting_physician_profile: PhysicianProfile,
+    scheduled_start,
+    case_summary,
+    requester_name,
+    requester_specialization,
+    requester_country_of_practice,
+    requester_email,
+    requester_whatsapp_number="",
+):
     if not case_summary or not case_summary.strip():
         raise BookingValidationError("slot_unavailable", "Case summary is required.")
 
@@ -48,6 +58,11 @@ def create_pending_booking(requesting_user, consulting_physician_profile: Physic
         scheduled_end=scheduled_end,
         status=Booking.STATUS_PENDING_PAYMENT,
         case_summary=case_summary.strip(),
+        requester_name=str(requester_name).strip(),
+        requester_specialization=str(requester_specialization).strip(),
+        requester_country_of_practice=str(requester_country_of_practice).strip(),
+        requester_email=str(requester_email).strip().lower(),
+        requester_whatsapp_number=str(requester_whatsapp_number).strip(),
     )
 
     return booking

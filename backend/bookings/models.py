@@ -37,6 +37,11 @@ class Booking(models.Model):
 	scheduled_end = models.DateTimeField()
 	status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_PENDING_PAYMENT)
 	case_summary = models.TextField()
+	requester_name = models.CharField(max_length=255)
+	requester_specialization = models.CharField(max_length=255)
+	requester_country_of_practice = models.CharField(max_length=100)
+	requester_email = models.EmailField()
+	requester_whatsapp_number = models.CharField(max_length=30, blank=True)
 	meeting_url = models.URLField(blank=True)
 	cancellation_reason = models.TextField(blank=True)
 	cancelled_by = models.ForeignKey(

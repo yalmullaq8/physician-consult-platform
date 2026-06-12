@@ -87,6 +87,11 @@ export default function BookingClient({ physician }: BookingClientProps) {
   const [slots, setSlots] = useState<AvailableSlot[]>([]);
   const [selectedSlotStart, setSelectedSlotStart] = useState<string>("");
   const [caseSummary, setCaseSummary] = useState("");
+  const [requesterName, setRequesterName] = useState("");
+  const [requesterSpecialization, setRequesterSpecialization] = useState("");
+  const [requesterCountryOfPractice, setRequesterCountryOfPractice] = useState("");
+  const [requesterEmail, setRequesterEmail] = useState("");
+  const [requesterWhatsappNumber, setRequesterWhatsappNumber] = useState("");
   const [availabilityByDate, setAvailabilityByDate] = useState<Record<string, number>>({});
   const [isLoadingCalendar, setIsLoadingCalendar] = useState(false);
   const [isLoadingSlots, setIsLoadingSlots] = useState(false);
@@ -189,6 +194,26 @@ export default function BookingClient({ physician }: BookingClientProps) {
       return;
     }
 
+    if (!requesterName.trim()) {
+      setStatusMessage("Please provide your name.");
+      return;
+    }
+
+    if (!requesterSpecialization.trim()) {
+      setStatusMessage("Please provide your specialization.");
+      return;
+    }
+
+    if (!requesterCountryOfPractice.trim()) {
+      setStatusMessage("Please provide your country of practice.");
+      return;
+    }
+
+    if (!requesterEmail.trim()) {
+      setStatusMessage("Please provide your email.");
+      return;
+    }
+
     setIsSubmitting(true);
     setStatusMessage("");
 
@@ -196,6 +221,11 @@ export default function BookingClient({ physician }: BookingClientProps) {
       consulting_physician_id: physician.id,
       scheduled_start: selectedSlot.start,
       case_summary: caseSummary.trim(),
+      requester_name: requesterName.trim(),
+      requester_specialization: requesterSpecialization.trim(),
+      requester_country_of_practice: requesterCountryOfPractice.trim(),
+      requester_email: requesterEmail.trim().toLowerCase(),
+      requester_whatsapp_number: requesterWhatsappNumber.trim(),
     });
 
     if (!result.success || !result.data?.payment_url) {
@@ -358,6 +388,83 @@ export default function BookingClient({ physician }: BookingClientProps) {
               placeholder="Briefly describe the case and consultation goals."
               className="mt-3 w-full rounded-xl border border-[#bfcabb] bg-[#ffffff] px-3 py-2 text-sm text-[#1b1b1b] outline-none ring-[#00501e] transition focus:ring-2"
             />
+          </div>
+
+          <div className="rounded-2xl border border-[#bfcabb] bg-white p-4">
+            <p className="text-xs font-semibold tracking-[0.16em] text-[#3f493e] uppercase">
+              Requester Details
+            </p>
+            <div className="mt-3 grid gap-3 md:grid-cols-2">
+              <div>
+                <label htmlFor="requester-name" className="text-xs font-semibold text-[#3f493e]">
+                  Name
+                </label>
+                <input
+                  id="requester-name"
+                  type="text"
+                  value={requesterName}
+                  onChange={(event) => setRequesterName(event.target.value)}
+                  className="mt-1 w-full rounded-xl border border-[#bfcabb] bg-white px-3 py-2 text-sm text-[#1b1b1b] outline-none ring-[#00501e] transition focus:ring-2"
+                  placeholder="Your full name"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="requester-specialization" className="text-xs font-semibold text-[#3f493e]">
+                  Specialization
+                </label>
+                <input
+                  id="requester-specialization"
+                  type="text"
+                  value={requesterSpecialization}
+                  onChange={(event) => setRequesterSpecialization(event.target.value)}
+                  className="mt-1 w-full rounded-xl border border-[#bfcabb] bg-white px-3 py-2 text-sm text-[#1b1b1b] outline-none ring-[#00501e] transition focus:ring-2"
+                  placeholder="e.g. Orthodontics"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="requester-country" className="text-xs font-semibold text-[#3f493e]">
+                  Country of Practice
+                </label>
+                <input
+                  id="requester-country"
+                  type="text"
+                  value={requesterCountryOfPractice}
+                  onChange={(event) => setRequesterCountryOfPractice(event.target.value)}
+                  className="mt-1 w-full rounded-xl border border-[#bfcabb] bg-white px-3 py-2 text-sm text-[#1b1b1b] outline-none ring-[#00501e] transition focus:ring-2"
+                  placeholder="e.g. Kuwait"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="requester-email" className="text-xs font-semibold text-[#3f493e]">
+                  Email
+                </label>
+                <input
+                  id="requester-email"
+                  type="email"
+                  value={requesterEmail}
+                  onChange={(event) => setRequesterEmail(event.target.value)}
+                  className="mt-1 w-full rounded-xl border border-[#bfcabb] bg-white px-3 py-2 text-sm text-[#1b1b1b] outline-none ring-[#00501e] transition focus:ring-2"
+                  placeholder="you@example.com"
+                />
+              </div>
+
+              <div className="md:col-span-2">
+                <label htmlFor="requester-whatsapp" className="text-xs font-semibold text-[#3f493e]">
+                  WhatsApp Number (Optional)
+                </label>
+                <input
+                  id="requester-whatsapp"
+                  type="text"
+                  value={requesterWhatsappNumber}
+                  onChange={(event) => setRequesterWhatsappNumber(event.target.value)}
+                  className="mt-1 w-full rounded-xl border border-[#bfcabb] bg-white px-3 py-2 text-sm text-[#1b1b1b] outline-none ring-[#00501e] transition focus:ring-2"
+                  placeholder="+965 XXXXXXXX"
+                />
+              </div>
+            </div>
           </div>
 
           {statusMessage ? (
