@@ -14,7 +14,7 @@ export default function SiteHeader() {
             className="h-11 w-11 rounded-full border border-[#d6ded3] bg-white object-cover"
             priority
           />
-          <span className="text-2xl font-bold tracking-tight">360 Med Consult</span>
+          <span className="text-2xl font-bold tracking-tight">360.dentist</span>
         </Link>
 
         <nav className="flex items-center gap-2">
@@ -23,12 +23,6 @@ export default function SiteHeader() {
             className="rounded px-3 py-2 text-sm font-medium text-[#00501e] transition hover:bg-[#eef4ee]"
           >
             Physicians
-          </Link>
-          <Link
-            href="/dashboard"
-            className="rounded px-3 py-2 text-sm font-medium text-[#3f493e] transition hover:bg-[#eef4ee]"
-          >
-            Account
           </Link>
         </nav>
       </div>
