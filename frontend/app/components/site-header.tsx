@@ -7,8 +7,8 @@ export default function SiteHeader() {
       <div className="container-shell flex flex-wrap items-center justify-between gap-3 py-4">
         <Link href="/" className="flex items-center gap-2 whitespace-nowrap text-[#00501e]">
           <Image
-            src="/brand-360-med-consult.svg"
-            alt="360 Med Consult logo"
+            src="/360_logo_vector.svg"
+            alt="360 logo"
             width={44}
             height={44}
             className="h-11 w-11 rounded-full border border-[#d6ded3] bg-white object-cover"

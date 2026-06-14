@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-label="360 Med Consult logo">
-  <rect width="400" height="400" fill="#f2f2f2" />
-  <path d="M30 145 A180 180 0 0 1 370 120" fill="none" stroke="#0f7d10" stroke-width="7" stroke-linecap="round"/>
-  <path d="M130 95 A145 145 0 0 1 330 325" fill="none" stroke="#c7c7c7" stroke-width="7" stroke-linecap="round"/>
-  <path d="M258 115 A125 125 0 0 1 112 318" fill="none" stroke="#ea2227" stroke-width="7" stroke-linecap="round"/>
-  <path d="M220 338 A160 160 0 0 0 355 158" fill="none" stroke="#c7c7c7" stroke-width="7" stroke-linecap="round"/>
-  <text x="62" y="170" font-family="Arial, Helvetica, sans-serif" font-size="74" font-weight="800" fill="#111111">360</text>
-  <text x="62" y="214" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="500" letter-spacing="1" fill="#111111">MED CONSULT</text>
-</svg>
