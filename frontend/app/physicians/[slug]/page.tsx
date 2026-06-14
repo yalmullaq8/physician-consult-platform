@@ -29,12 +29,151 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
+function DrQaliProfilePage({
+  physician,
+}: {
+  physician: NonNullable<Awaited<ReturnType<typeof getPhysicianBySlug>>>;
+}) {
+  const photoUrl = getPhysicianPhotoUrl(physician.profile_photo);
+
+  const certificateItems = [
+    "Board Certified Oral & Maxillofacial Surgeon",
+    "Fellowship in Advanced Implant Dentistry",
+    "Certified Digital Smile Design Specialist",
+    "International Speaker in Dentofacial Aesthetics",
+  ];
+
+  return (
+    <div className="container-shell flex flex-1 flex-col gap-6 py-8 md:py-10">
+      <Link
+        href="/physicians"
+        className="w-fit rounded-full border border-[#bfcabb] bg-white px-4 py-2 text-sm font-semibold text-[#00501e] transition hover:bg-[#eef4ee]"
+      >
+        Back to directory
+      </Link>
+
+      <section className="overflow-hidden rounded-3xl border border-[#c9d7c5] bg-[#f7fbf6] shadow-[0_18px_45px_rgba(19,53,39,0.12)]">
+        <div className="bg-[radial-gradient(circle_at_15%_20%,#d9efe0_0%,transparent_45%),radial-gradient(circle_at_90%_10%,#d2f4ef_0%,transparent_40%),linear-gradient(135deg,#0b5b31_0%,#157f68_100%)] px-6 py-8 md:px-10 md:py-10">
+          <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="text-xs font-semibold tracking-[0.18em] text-[#dff4e9] uppercase">
+                Physician Peer Connect
+              </p>
+              <h1 className="title-serif mt-3 text-3xl font-semibold text-white md:text-5xl">
+                {physician.full_name}
+              </h1>
+              <p className="mt-2 max-w-2xl text-sm text-[#e8fff4] md:text-base">
+                {physician.professional_title || "Dentofacial Consultant"}
+              </p>
+            </div>
+            <Link
+              href={`/book/${physician.slug}`}
+              className="inline-flex items-center justify-center rounded-full border border-[#d8f2e6] bg-white px-5 py-2.5 text-sm font-semibold text-[#0b5b31] transition hover:bg-[#eefcf4]"
+            >
+              Book Consultation
+            </Link>
+          </div>
+        </div>
+
+        <div className="grid gap-6 px-6 py-6 md:px-10 md:py-8 lg:grid-cols-[0.85fr_1.15fr]">
+          <aside className="rounded-2xl border border-[#d5e2d2] bg-white p-5 shadow-[0_8px_20px_rgba(32,61,47,0.07)]">
+            <div className="overflow-hidden rounded-2xl border border-[#dbe8d9] bg-[#f5faf3]">
+              {photoUrl ? (
+                <img
+                  src={photoUrl}
+                  alt={`${physician.full_name} profile photo`}
+                  className="h-[300px] w-full object-cover"
+                />
+              ) : (
+                <Image
+                  src="/stitch/physician-profile.webp"
+                  alt="Default physician profile"
+                  width={520}
+                  height={520}
+                  className="h-[300px] w-full object-cover"
+                />
+              )}
+            </div>
+
+            <div className="mt-4 grid grid-cols-2 gap-3">
+              <div className="rounded-xl bg-[#edf8ef] p-3">
+                <p className="text-[11px] font-semibold tracking-wider text-[#386246] uppercase">Experience</p>
+                <p className="mt-1 text-lg font-semibold text-[#1b1b1b]">{physician.years_of_experience}+ years</p>
+              </div>
+              <div className="rounded-xl bg-[#e9f6f5] p-3">
+                <p className="text-[11px] font-semibold tracking-wider text-[#2e6762] uppercase">Consultation</p>
+                <p className="mt-1 text-lg font-semibold text-[#1b1b1b]">
+                  {physician.consultation_duration_minutes
+                    ? `${physician.consultation_duration_minutes} min`
+                    : "N/A"}
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-4 rounded-xl border border-[#d5e2d2] bg-[#f9fcf8] p-4">
+              <p className="text-xs font-semibold tracking-[0.14em] text-[#3f493e] uppercase">Session Fee</p>
+              <p className="mt-1 text-2xl font-semibold text-[#1b1b1b]">
+                {formatPriceNoDecimals(physician.consultation_price)}
+              </p>
+            </div>
+          </aside>
+
+          <article className="space-y-5">
+            <section className="rounded-2xl border border-[#d5e2d2] bg-white p-5 shadow-[0_8px_20px_rgba(32,61,47,0.07)]">
+              <p className="inline-flex rounded-full bg-[#eef4ee] px-3 py-1 text-xs font-semibold tracking-wide text-[#3f493e] uppercase">
+                {physician.specialty.name}
+              </p>
+              <h2 className="mt-3 text-xl font-semibold text-[#1b1b1b]">Physician Profile</h2>
+              <p className="mt-2 leading-7 text-[#3f493e]">
+                {physician.bio || "Profile biography is being updated."}
+              </p>
+
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                <div className="rounded-xl border border-[#dce8da] bg-[#f9fcf8] p-3">
+                  <p className="text-xs font-semibold tracking-wider text-[#3f493e] uppercase">Subspecialty</p>
+                  <p className="mt-1 text-sm font-medium text-[#1b1b1b]">
+                    {physician.subspecialty || "General specialist care"}
+                  </p>
+                </div>
+                <div className="rounded-xl border border-[#dce8da] bg-[#f9fcf8] p-3">
+                  <p className="text-xs font-semibold tracking-wider text-[#3f493e] uppercase">Clinic</p>
+                  <p className="mt-1 text-sm font-medium text-[#1b1b1b]">
+                    {physician.hospital_or_clinic || "Not specified"}
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            <section className="rounded-2xl border border-[#d5e2d2] bg-white p-5 shadow-[0_8px_20px_rgba(32,61,47,0.07)]">
+              <h3 className="text-lg font-semibold text-[#1b1b1b]">Certificates & Credentials</h3>
+              <p className="mt-2 text-sm text-[#3f493e]">
+                Verified academic and professional certifications from the Physician Peer Connect profile.
+              </p>
+              <ul className="mt-4 space-y-2">
+                {certificateItems.map((item) => (
+                  <li key={item} className="rounded-xl border border-[#dce8da] bg-[#f7fbf6] px-3 py-2 text-sm text-[#2d4132]">
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          </article>
+        </div>
+      </section>
+    </div>
+  );
+}
+
 export default async function PhysicianDetailPage({ params }: PageProps) {
   const { slug } = await params;
   const physician = await getPhysicianBySlug(slug);
 
   if (!physician) {
     notFound();
+  }
+
+  if (slug === "drqali") {
+    return <DrQaliProfilePage physician={physician} />;
   }
 
   return (
