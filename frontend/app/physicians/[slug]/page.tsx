@@ -34,10 +34,8 @@ function DrQaliProfilePage({
 }: {
   physician: NonNullable<Awaited<ReturnType<typeof getPhysicianBySlug>>>;
 }) {
-  const heroImage =
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuCF8Wus2MNk3ue8YAZKen_cnhMq7OFpn5OW2X4Ft9dwtKwRdKg2cRpncYkE3C_aJJuPC77XDqQklRWJXdiVW3BddtiNHRPDOxaKA9cXskhgl0GHfNVEDvXMBNM-NtFueuYjpOGYEXhMAym1sbkkBfgvwNZOlAIzXUTg6fjitKPg9iFXS0eiCnaFpMbxTbmp56SwsmWbypuIzb-LuIw1jPEMmXBQuQwPlJKx-f_OmP-QNqPk9YhW4KTwzgXLPlmzhFSEePi67K0NEQ";
-  const certificatesImage =
-    "https://lh3.googleusercontent.com/aida-public/AB6AXuDm7rcPFrcHbSI7Li5iLzOV2dE7GK8ZO2C56MOwD5QQJPNpemscYy8RRBdVFvqnCGBbDE5nWhMal9J1bOyGRwN_7Ah2AFwFdmwRoy24Tf8d2e8dHUgzeZ_BkC4R6geyAmadfIAOmzhl34vHXUmiDxCG8u7h7ErMDS9uiciVC7lC4bfgaKEnm6CS3MVU-zR3NzW1YHYWrb2c4Bq97mvn9rIot_ACo2CBDB6FNUHT5S4mKLYEZ5NzH9vtg-lKN34FEFGCUFnR7qVIDg";
+  const heroImage = "/drqali_hero_img.jpeg";
+  const certificatesImage = "/certificates_image.png";
 
   const clinicalScopeCards = [
     {
@@ -117,7 +115,7 @@ function DrQaliProfilePage({
                   href={`/book/${physician.slug}`}
                   className="inline-flex rounded-full bg-[#00501e] px-8 py-3 text-sm font-bold uppercase tracking-wide text-white transition hover:scale-[1.02]"
                 >
-                  Book A Virtual Consultation
+                  Book Consultation
                 </Link>
               </div>
             </div>
@@ -192,7 +190,7 @@ function DrQaliProfilePage({
                 href={`/book/${physician.slug}`}
                 className="rounded-full bg-[#00501e] px-10 py-4 text-sm font-bold uppercase tracking-wide text-white transition hover:scale-[1.02]"
               >
-                Book A Virtual Consultation
+                Book Consultation
               </Link>
             </div>
 
