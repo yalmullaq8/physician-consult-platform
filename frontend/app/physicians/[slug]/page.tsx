@@ -68,14 +68,7 @@ function DrQaliProfilePage({
   return (
     <div className="bg-[#f9f9f9] text-[#1b1b1b]">
       <div className="mx-auto w-full max-w-[1280px] px-4 py-8 md:px-12">
-        <div className="mb-6 flex items-center justify-end gap-3">
-          <Link
-            href={`/book/${physician.slug}`}
-            className="rounded-full bg-[#00501e] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#006b2b]"
-          >
-            Book Consultation
-          </Link>
-        </div>
+    
 
         <section className="relative mb-12 h-[560px] overflow-hidden rounded-xl">
           <img
