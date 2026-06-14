@@ -22,7 +22,7 @@ export default function SiteHeader() {
             href="/physicians"
             className="rounded px-3 py-2 text-sm font-medium text-[#00501e] transition hover:bg-[#eef4ee]"
           >
-            Physicians
+            Dentists
           </Link>
         </nav>
       </div>
