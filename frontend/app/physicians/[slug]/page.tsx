@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
+import LectureCarousel from "@/app/components/lecture-carousel";
 import { getPhysicianBySlug } from "@/lib/api";
 import { formatPriceNoDecimals } from "@/lib/formatting";
 
@@ -86,7 +87,7 @@ function DrQaliProfilePage({
           <img
             src={heroImage}
             alt={`${physician.full_name} hero portrait`}
-            className="h-full w-full object-cover"
+            className="h-full w-full object-cover object-center md:object-top"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />
           <div className="absolute inset-x-0 bottom-0 p-7 md:p-12">
@@ -141,11 +142,11 @@ function DrQaliProfilePage({
 
         <div className="space-y-8">
           <section>
-            <div className="overflow-hidden rounded-xl border border-[#bfcabb]">
+            <div className="overflow-hidden rounded-xl border border-[#bfcabb] bg-[#f3f5f2] p-2 md:p-3">
               <img
                 src={certificatesImage}
                 alt="Professional certificates and board certifications"
-                className="h-auto max-h-[620px] w-full object-cover"
+                className="h-auto w-full rounded-lg object-contain"
               />
             </div>
           </section>
@@ -192,6 +193,10 @@ function DrQaliProfilePage({
               >
                 Book Consultation
               </Link>
+            </div>
+
+            <div className="mb-8">
+              <LectureCarousel />
             </div>
 
             <h3 className="mb-6 text-3xl font-semibold text-[#1b1b1b]">Clinical Scope</h3>
