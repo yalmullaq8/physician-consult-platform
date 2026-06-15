@@ -62,7 +62,7 @@ export default async function PhysiciansPage({ searchParams }: PageProps) {
       </header>
 
       <section className="surface-card p-5 md:p-6">
-        <form className="grid gap-3 md:grid-cols-[1fr_240px_auto] md:items-end" action="/physicians">
+        <form className="grid gap-3 md:grid-cols-[1fr_240px_auto] md:items-end" action="/dentists">
           <div>
             <label
               htmlFor="search"
@@ -161,7 +161,7 @@ export default async function PhysiciansPage({ searchParams }: PageProps) {
                   </p>
                 </div>
                 <Link
-                  href={`/physicians/${physician.slug}`}
+                  href={`/dentists/${physician.slug}`}
                   className="rounded-lg border border-[#bfcabb] px-3 py-2 font-semibold text-[#00501e] transition hover:bg-[#eef4ee]"
                 >
                   View Profile

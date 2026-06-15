@@ -6,6 +6,16 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        source: "/physicians",
+        destination: "/dentists",
+        permanent: true,
+      },
+      {
+        source: "/physicians/:slug",
+        destination: "/dentists/:slug",
+        permanent: true,
+      },
+      {
         source: "/",
         has: [
           {
@@ -13,7 +23,7 @@ const nextConfig: NextConfig = {
             value: "360.dentist",
           },
         ],
-        destination: "https://www.360.dentist/physicians/drqali",
+        destination: "https://www.360.dentist/dentists/drqali",
         permanent: true,
       },
       {
@@ -24,7 +34,7 @@ const nextConfig: NextConfig = {
             value: "www.360.dentist",
           },
         ],
-        destination: "https://www.360.dentist/physicians/drqali",
+        destination: "https://www.360.dentist/dentists/drqali",
         permanent: true,
       },
     ];

@@ -22,10 +22,10 @@ export default function PaymentErrorPage() {
             Back to Home
           </Link>
           <Link
-            href="/physicians"
+            href="/dentists"
             className="rounded-xl border border-[#bfcabb] bg-white px-5 py-3 text-sm font-semibold text-[#00501e] transition hover:bg-[#eef4ee]"
           >
-            Browse Physicians
+            Browse Dentists
           </Link>
         </div>
       </section>

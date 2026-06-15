@@ -193,7 +193,7 @@ export default function DashboardPage() {
               : "No past consultations found yet."}
           </p>
           <Link
-            href="/physicians"
+            href="/dentists"
             className="mt-4 inline-flex rounded-xl bg-[#00501e] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#006b2b]"
           >
             Browse Consultants

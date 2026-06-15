@@ -19,7 +19,7 @@ export default function SiteHeader() {
 
         <nav className="flex items-center gap-2">
           <Link
-            href="/physicians"
+            href="/dentists"
             className="rounded px-3 py-2 text-sm font-medium text-[#00501e] transition hover:bg-[#eef4ee]"
           >
             Dentists

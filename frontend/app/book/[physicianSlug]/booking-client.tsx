@@ -241,7 +241,7 @@ export default function BookingClient({ physician }: BookingClientProps) {
     <div className="container-shell flex flex-1 flex-col gap-6 py-8 md:py-10">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <Link
-          href={`/physicians/${physician.slug}`}
+          href={`/dentists/${physician.slug}`}
           className="w-fit rounded-full border border-[#bfcabb] bg-white px-4 py-2 text-sm font-semibold text-[#00501e] transition hover:bg-[#eef4ee]"
         >
           Back to profile

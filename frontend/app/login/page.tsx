@@ -120,7 +120,7 @@ export default function LoginPage() {
         </form>
 
         <p className="mt-4 text-xs text-[#3f493e]">
-          Need to browse physicians first? <Link href="/physicians" className="font-semibold text-[#00501e]">Go to directory</Link>
+          Need to browse dentists first? <Link href="/dentists" className="font-semibold text-[#00501e]">Go to directory</Link>
         </p>
       </section>
     </div>

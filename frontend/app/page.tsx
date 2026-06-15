@@ -177,7 +177,7 @@ export default async function Home({ searchParams }: PageProps) {
                       Book Now
                     </Link>
                     <Link
-                      href={`/physicians/${physician.slug}`}
+                      href={`/dentists/${physician.slug}`}
                       className="rounded-lg border border-[#00501e] px-3 py-2 text-center text-sm font-bold text-[#00501e] transition hover:bg-[#eef4ee]"
                     >
                       More Details
@@ -203,7 +203,7 @@ export default async function Home({ searchParams }: PageProps) {
 
           <div className="flex justify-center">
             <Link
-              href="/physicians"
+              href="/dentists"
               className="rounded-lg border border-[#00501e] px-5 py-2.5 text-sm font-semibold text-[#00501e] transition hover:bg-[#eef4ee]"
             >
               View Full Consultant Directory
