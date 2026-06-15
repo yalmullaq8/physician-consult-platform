@@ -80,6 +80,14 @@ function formatLongDate(dateValue: string): string {
   });
 }
 
+function formatConsultationDuration(minutes: number | null): string {
+  if (!minutes) {
+    return "Not specified";
+  }
+
+  return `${minutes} ${minutes === 1 ? "minute" : "minutes"}`;
+}
+
 export default function BookingClient({ physician }: BookingClientProps) {
   const [selectedDate, setSelectedDate] = useState(getTomorrowDateString());
   const [visibleMonthStart, setVisibleMonthStart] = useState(
@@ -262,6 +270,9 @@ export default function BookingClient({ physician }: BookingClientProps) {
               {physician.full_name}
             </h1>
             <p className="mt-1 text-sm text-[#3f493e]">{physician.professional_title}</p>
+            <p className="mt-1 text-sm text-[#3f493e]">
+              Consultation Duration: {formatConsultationDuration(physician.consultation_duration_minutes)}
+            </p>
             <SpecialtyBadges
               specialties={physician.specialties}
               className="mt-2 gap-1.5"
@@ -489,6 +500,11 @@ export default function BookingClient({ physician }: BookingClientProps) {
               <p>
                 Time: <span className="font-semibold text-[#1b1b1b]">
                   {selectedSlot ? formatSlotTime(selectedSlot.start) : "Select a slot"}
+                </span>
+              </p>
+              <p>
+                Duration: <span className="font-semibold text-[#1b1b1b]">
+                  {formatConsultationDuration(physician.consultation_duration_minutes)}
                 </span>
               </p>
               <p>

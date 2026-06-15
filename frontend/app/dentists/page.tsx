@@ -76,7 +76,7 @@ export default async function PhysiciansPage({ searchParams }: PageProps) {
               name="search"
               type="text"
               defaultValue={params.search ?? ""}
-              placeholder="Physician name or specialty"
+              placeholder="Dentist name or specialty"
               className="mt-2 w-full rounded-xl border border-[#bfcabb] bg-white px-4 py-2.5 text-sm outline-none ring-[#00501e] transition focus:ring-2"
             />
           </div>
