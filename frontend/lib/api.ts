@@ -351,11 +351,20 @@ export async function createBooking(payload: CreateBookingPayload): Promise<{
   data?: CreateBookingResult;
   errorMessage?: string;
 }> {
+  const csrfToken = await fetchCsrfToken();
+  if (!csrfToken) {
+    return {
+      success: false,
+      errorMessage: "Could not initialize booking session. Please refresh and try again.",
+    };
+  }
+
   try {
     const response = await fetch(buildUrl("/bookings/"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "X-CSRFToken": csrfToken,
       },
       credentials: "include",
       cache: "no-store",

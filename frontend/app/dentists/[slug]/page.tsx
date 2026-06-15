@@ -80,7 +80,7 @@ function DrQaliProfilePage({
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />
           <div className="absolute inset-x-0 bottom-0 p-7 md:p-12">
             <div className="max-w-2xl">
-              <SpecialtyBadges specialties={physician.specialties} tone="light" className="mb-4 gap-2" />
+              {/* <SpecialtyBadges specialties={physician.specialties} tone="light" className="mb-4 gap-2" /> */}
               <h2 className="text-4xl font-bold text-white md:text-5xl">Welcome!</h2>
               <p className="mt-4 text-sm leading-relaxed text-white/95 md:text-base">
                 I&apos;m Dr. Mohammad Qali, a quadruple board-certified Periodontist and Orthodontist.
