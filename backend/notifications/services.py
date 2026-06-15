@@ -176,7 +176,7 @@ def send_booking_confirmed_notifications(booking):
     consultant_subject = f"New Confirmed Consultation: {booking.booking_reference}"
     consultant_body = (
         f"A consultation booking {booking.booking_reference} has been confirmed.\n"
-        f"Requesting physician account: {booking.requesting_physician.full_name}\n"
+        f"Requesting account: {booking.requesting_physician.full_name}\n"
         f"Scheduled start: {formatted_start}\n"
         f"Video conference link: {video_link}\n\n"
         f"{requester_details_block}"
