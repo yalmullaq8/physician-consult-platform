@@ -41,8 +41,8 @@ function DrQaliProfilePage({
 
   const clinicalScopeCards = [
     {
-      title: "ORTHODONTICS",
-      lines: ["Braces & Lingual", "Aligner Therapy", "Growth Modification", "Surgical Orthodontics"],
+      title: "ORTHODONTICS & DENTOFACIAL ORTHOPEDICS",
+      lines: ["Fixed appliances", "Aligner Therapy", "Growth Modification", "Surgical Orthodontics"],
       image:
         "/orthodontics_img.png",
     },
