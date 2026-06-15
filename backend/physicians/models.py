@@ -42,7 +42,7 @@ class PhysicianProfile(models.Model):
 	user = models.OneToOneField("accounts.User", on_delete=models.CASCADE, related_name="physician_profile")
 	full_name = models.CharField(max_length=255)
 	slug = models.SlugField(max_length=280, unique=True, blank=True)
-	specialty = models.ForeignKey(Specialty, on_delete=models.PROTECT, related_name="physicians")
+	specialties = models.ManyToManyField(Specialty, related_name="physician_profiles")
 	subspecialty = models.CharField(max_length=255, blank=True)
 	professional_title = models.CharField(max_length=255, blank=True)
 	license_country = models.CharField(max_length=100, blank=True)

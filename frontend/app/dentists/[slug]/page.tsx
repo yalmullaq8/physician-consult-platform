@@ -3,6 +3,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 
 import LectureCarousel from "@/app/components/lecture-carousel";
+import SpecialtyBadges from "@/app/components/specialty-badges";
 import { getPhysicianBySlug } from "@/lib/api";
 import { formatPriceNoDecimals } from "@/lib/formatting";
 
@@ -43,7 +44,7 @@ function DrQaliProfilePage({
       title: "ORTHODONTICS",
       lines: ["Braces & Lingual", "Aligner Therapy", "Growth Modification", "Surgical Orthodontics"],
       image:
-        "/orthodontics_image.jpeg",
+        "/orthodontics_img.png",
     },
     {
       title: "PERIODONTICS",
@@ -79,10 +80,11 @@ function DrQaliProfilePage({
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />
           <div className="absolute inset-x-0 bottom-0 p-7 md:p-12">
             <div className="max-w-2xl">
-              <h2 className="text-4xl font-bold text-white md:text-5xl">Hello!</h2>
+              <SpecialtyBadges specialties={physician.specialties} tone="light" className="mb-4 gap-2" />
+              <h2 className="text-4xl font-bold text-white md:text-5xl">Welcome!</h2>
               <p className="mt-4 text-sm leading-relaxed text-white/95 md:text-base">
                 I&apos;m Dr. Mohammad Qali, a quadruple board-certified Periodontist and Orthodontist.
-                Whether you're seeking expert clinical guidance, advanced dental treatment solutions, or simply exploring a comprehensive 360° approach to oral health and smile transformation, you've come to the right place.
+                Whether you&apos;re seeking expert clinical guidance, advanced dental treatment solutions, or simply exploring a comprehensive 360° approach to oral health and smile transformation, you&apos;ve come to the right place.
               </p>
               <a
                 href="https://www.instagram.com/dr_qali/"
@@ -266,9 +268,7 @@ export default async function PhysicianDetailPage({ params }: PageProps) {
               </div>
 
               <div className="pt-1 pb-2 md:pt-2">
-                <p className="inline-flex rounded-full bg-[#eef4ee] px-3 py-1 text-xs font-semibold tracking-wide text-[#3f493e] uppercase">
-                  {physician.specialty.name}
-                </p>
+                <SpecialtyBadges specialties={physician.specialties} className="gap-1.5" />
                 <h1 className="title-serif mt-3 text-3xl font-semibold text-[#1b1b1b] md:text-5xl">
                   {physician.full_name}
                 </h1>

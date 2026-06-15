@@ -25,13 +25,13 @@ class MyAvailabilityAPITests(APITestCase):
 		self.profile = PhysicianProfile.objects.create(
 			user=self.physician_user,
 			full_name="Dr. Physician",
-			specialty=self.specialty,
 			license_country="KW",
 			consultation_price="20.00",
 			consultation_duration_minutes=30,
 			is_verified=True,
 			accepts_bookings=True,
 		)
+		self.profile.specialties.set([self.specialty])
 
 	def test_non_physician_user_cannot_access_my_availability(self):
 		self.client.force_authenticate(self.non_physician_user)
@@ -145,3 +145,75 @@ class MyAvailabilityAPITests(APITestCase):
 		exception.refresh_from_db()
 		self.assertEqual(exception.exception_type, "extra_available")
 		self.assertEqual(exception.reason, "Opened extra session")
+
+
+class PublicPhysicianAPITests(APITestCase):
+	def setUp(self):
+		self.client = APIClient()
+		self.cardiology = Specialty.objects.create(name="Cardiology")
+		self.neurology = Specialty.objects.create(name="Neurology")
+		self.dermatology = Specialty.objects.create(name="Dermatology")
+
+		self.user = User.objects.create_user(
+			email="public-physician@example.com",
+			password="pass1234",
+			full_name="Public Physician",
+		)
+		self.profile = PhysicianProfile.objects.create(
+			user=self.user,
+			full_name="Dr. Multi Specialty",
+			license_country="KW",
+			consultation_price="30.00",
+			consultation_duration_minutes=25,
+			is_verified=True,
+			accepts_bookings=True,
+		)
+		self.profile.specialties.set([self.cardiology, self.neurology])
+
+		self.other_user = User.objects.create_user(
+			email="other-physician@example.com",
+			password="pass1234",
+			full_name="Other Physician",
+		)
+		self.other_profile = PhysicianProfile.objects.create(
+			user=self.other_user,
+			full_name="Dr. Skin Expert",
+			license_country="KW",
+			consultation_price="25.00",
+			consultation_duration_minutes=20,
+			is_verified=True,
+			accepts_bookings=True,
+		)
+		self.other_profile.specialties.set([self.dermatology])
+
+	def test_public_physician_list_returns_specialties_array(self):
+		response = self.client.get("/api/physicians/", HTTP_HOST="localhost")
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		self.assertTrue(response.data["success"])
+		first_result = response.data["data"][0]
+		self.assertIn("specialties", first_result)
+		self.assertNotIn("specialty", first_result)
+		self.assertGreaterEqual(len(first_result["specialties"]), 1)
+
+	def test_public_physician_detail_returns_specialties_array(self):
+		response = self.client.get(f"/api/physicians/{self.profile.slug}/", HTTP_HOST="localhost")
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		self.assertTrue(response.data["success"])
+		self.assertEqual(
+			[item["slug"] for item in response.data["data"]["specialties"]],
+			[self.cardiology.slug, self.neurology.slug],
+		)
+
+	def test_public_physician_list_filters_by_single_specialty_param(self):
+		response = self.client.get(
+			f"/api/physicians/?specialty={self.neurology.slug}",
+			HTTP_HOST="localhost",
+		)
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		self.assertTrue(response.data["success"])
+		results = response.data["data"]
+		self.assertEqual(len(results), 1)
+		self.assertEqual(results[0]["slug"], self.profile.slug)

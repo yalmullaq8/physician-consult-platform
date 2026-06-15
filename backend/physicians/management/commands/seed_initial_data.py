@@ -37,7 +37,7 @@ class Command(BaseCommand):
             {
                 "email": "dr.amina.alsalem@example.com",
                 "full_name": "Dr. Amina Al Salem",
-                "specialty": "Cardiology",
+                "specialties": ["Cardiology"],
                 "license_country": "Kuwait",
                 "hospital_or_clinic": "Kuwait Heart Center",
                 "years_of_experience": 12,
@@ -48,7 +48,7 @@ class Command(BaseCommand):
             {
                 "email": "dr.omar.alrashid@example.com",
                 "full_name": "Dr. Omar Al Rashid",
-                "specialty": "Neurology",
+                "specialties": ["Neurology"],
                 "license_country": "Kuwait",
                 "hospital_or_clinic": "Al Salam Specialist Hospital",
                 "years_of_experience": 10,
@@ -59,7 +59,7 @@ class Command(BaseCommand):
             {
                 "email": "dr.sara.alhaddad@example.com",
                 "full_name": "Dr. Sara Al Haddad",
-                "specialty": "Dermatology",
+                "specialties": ["Dermatology"],
                 "license_country": "Kuwait",
                 "hospital_or_clinic": "Royal Care Clinic",
                 "years_of_experience": 8,
@@ -82,11 +82,10 @@ class Command(BaseCommand):
                 user.set_password("ChangeMe123!")
                 user.save(update_fields=["password"])
 
-            PhysicianProfile.objects.get_or_create(
+            profile, _ = PhysicianProfile.objects.get_or_create(
                 user=user,
                 defaults={
                     "full_name": physician["full_name"],
-                    "specialty": specialty_map[physician["specialty"]],
                     "professional_title": "Consultant",
                     "license_country": physician.get("license_country", ""),
                     "hospital_or_clinic": physician["hospital_or_clinic"],
@@ -97,6 +96,10 @@ class Command(BaseCommand):
                     "is_verified": True,
                     "accepts_bookings": True,
                 },
+            )
+
+            profile.specialties.set(
+                [specialty_map[name] for name in physician.get("specialties", [])]
             )
 
         self.stdout.write(self.style.SUCCESS("Initial specialties and sample physicians seeded successfully."))

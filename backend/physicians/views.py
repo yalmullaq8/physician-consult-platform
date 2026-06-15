@@ -58,24 +58,25 @@ class PublicPhysicianListView(APISuccessListMixin, generics.ListAPIView):
 
 	def get_queryset(self):
 		queryset = (
-			PhysicianProfile.objects.select_related("specialty")
-			.filter(is_verified=True, accepts_bookings=True, specialty__is_active=True)
+			PhysicianProfile.objects.prefetch_related("specialties")
+			.filter(is_verified=True, accepts_bookings=True, specialties__is_active=True)
 			.order_by("full_name")
+			.distinct()
 		)
 
 		specialty_value = self.request.query_params.get("specialty")
 		if specialty_value:
 			if specialty_value.isdigit():
-				queryset = queryset.filter(specialty_id=int(specialty_value))
+				queryset = queryset.filter(specialties__id=int(specialty_value))
 			else:
-				queryset = queryset.filter(specialty__slug=specialty_value)
+				queryset = queryset.filter(specialties__slug=specialty_value)
 
 		search_value = self.request.query_params.get("search")
 		if search_value:
 			queryset = queryset.filter(
 				Q(full_name__icontains=search_value)
 				| Q(user__email__icontains=search_value)
-				| Q(specialty__name__icontains=search_value)
+				| Q(specialties__name__icontains=search_value)
 			)
 
 		featured_value = self.request.query_params.get("featured")
@@ -83,7 +84,7 @@ class PublicPhysicianListView(APISuccessListMixin, generics.ListAPIView):
 			featured = featured_value.lower() in {"1", "true", "yes"}
 			queryset = queryset.filter(is_featured=featured)
 
-		return queryset
+		return queryset.distinct()
 
 
 class PublicPhysicianDetailView(APISuccessRetrieveMixin, generics.RetrieveAPIView):
@@ -92,11 +93,11 @@ class PublicPhysicianDetailView(APISuccessRetrieveMixin, generics.RetrieveAPIVie
 	lookup_field = "slug"
 
 	def get_queryset(self):
-		return PhysicianProfile.objects.select_related("specialty").filter(
+		return PhysicianProfile.objects.prefetch_related("specialties").filter(
 			is_verified=True,
 			accepts_bookings=True,
-			specialty__is_active=True,
-		)
+			specialties__is_active=True,
+		).distinct()
 
 
 class PublicPhysicianAvailableSlotsView(APIView):
@@ -134,8 +135,8 @@ class PublicPhysicianAvailableSlotsView(APIView):
 			slug=slug,
 			is_verified=True,
 			accepts_bookings=True,
-			specialty__is_active=True,
-		).first()
+			specialties__is_active=True,
+		).distinct().first()
 
 		if not physician:
 			return Response(

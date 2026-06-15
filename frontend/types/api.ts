@@ -30,7 +30,7 @@ export interface PhysicianSummary {
   id: number;
   full_name: string;
   slug: string;
-  specialty: Specialty;
+  specialties: Specialty[];
   professional_title: string;
   consultation_price: string | null;
   consultation_duration_minutes: number | null;
@@ -43,7 +43,7 @@ export interface PhysicianDetail {
   id: number;
   full_name: string;
   slug: string;
-  specialty: Specialty;
+  specialties: Specialty[];
   subspecialty: string;
   professional_title: string;
   hospital_or_clinic: string;

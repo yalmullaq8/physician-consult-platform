@@ -11,7 +11,7 @@ class SpecialtySerializer(serializers.ModelSerializer):
 
 
 class PhysicianListSerializer(serializers.ModelSerializer):
-    specialty = SpecialtySerializer(read_only=True)
+    specialties = SpecialtySerializer(many=True, read_only=True)
 
     class Meta:
         model = PhysicianProfile
@@ -19,7 +19,7 @@ class PhysicianListSerializer(serializers.ModelSerializer):
             "id",
             "full_name",
             "slug",
-            "specialty",
+            "specialties",
             "professional_title",
             "consultation_price",
             "consultation_duration_minutes",
@@ -30,7 +30,7 @@ class PhysicianListSerializer(serializers.ModelSerializer):
 
 
 class PhysicianDetailSerializer(serializers.ModelSerializer):
-    specialty = SpecialtySerializer(read_only=True)
+    specialties = SpecialtySerializer(many=True, read_only=True)
 
     class Meta:
         model = PhysicianProfile
@@ -38,7 +38,7 @@ class PhysicianDetailSerializer(serializers.ModelSerializer):
             "id",
             "full_name",
             "slug",
-            "specialty",
+            "specialties",
             "subspecialty",
             "professional_title",
             "hospital_or_clinic",

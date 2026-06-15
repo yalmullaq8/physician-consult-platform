@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import SpecialtyBadges from "@/app/components/specialty-badges";
 import { getPhysicians, getSpecialties } from "@/lib/api";
 import { formatPriceNoDecimals } from "@/lib/formatting";
 
@@ -135,9 +136,7 @@ export default async function PhysiciansPage({ searchParams }: PageProps) {
                   </div>
                 )}
                 <div>
-                  <p className="text-xs font-semibold tracking-[0.16em] text-[#3f493e] uppercase">
-                    {physician.specialty.name}
-                  </p>
+                  <SpecialtyBadges specialties={physician.specialties} className="gap-1.5" />
                   <h2 className="mt-1 text-xl font-semibold text-[#1b1b1b]">{physician.full_name}</h2>
                   <p className="mt-1 text-sm text-[#3f493e]">{physician.professional_title}</p>
                 </div>

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
+import SpecialtyBadges from "@/app/components/specialty-badges";
 import { createBooking, getPhysicianAvailableSlots } from "@/lib/api";
 import { formatPriceNoDecimals } from "@/lib/formatting";
 import { AvailableSlot, PhysicianDetail } from "@/types/api";
@@ -261,9 +262,11 @@ export default function BookingClient({ physician }: BookingClientProps) {
               {physician.full_name}
             </h1>
             <p className="mt-1 text-sm text-[#3f493e]">{physician.professional_title}</p>
-            <p className="mt-2 text-sm font-medium text-[#00501e]">
-              {physician.specialty.name}
-            </p>
+            <SpecialtyBadges
+              specialties={physician.specialties}
+              className="mt-2 gap-1.5"
+              badgeClassName="bg-[#eef4ee] text-[#00501e]"
+            />
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">

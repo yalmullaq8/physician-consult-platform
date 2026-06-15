@@ -17,7 +17,7 @@ class SpecialtyAdmin(admin.ModelAdmin):
 class PhysicianProfileAdmin(admin.ModelAdmin):
 	list_display = (
 		"full_name",
-		"specialty",
+		"specialties_list",
 		"license_country",
 		"consultation_price",
 		"consultation_duration_minutes",
@@ -26,9 +26,9 @@ class PhysicianProfileAdmin(admin.ModelAdmin):
 		"is_featured",
 		"created_at",
 	)
-	list_filter = ("specialty", "is_verified", "is_featured", "accepts_bookings", "license_country")
+	list_filter = ("specialties", "is_verified", "is_featured", "accepts_bookings", "license_country")
 	search_fields = ("full_name", "user__email", "hospital_or_clinic")
-	autocomplete_fields = ("user", "specialty")
+	autocomplete_fields = ("user", "specialties")
 	readonly_fields = ("created_at", "updated_at", "can_receive_bookings")
 	actions = (
 		"mark_verified",
@@ -40,7 +40,7 @@ class PhysicianProfileAdmin(admin.ModelAdmin):
 	)
 
 	fieldsets = (
-		(None, {"fields": ("user", "full_name", "slug", "specialty", "subspecialty", "professional_title")}),
+		(None, {"fields": ("user", "full_name", "slug", "specialties", "subspecialty", "professional_title")}),
 		(
 			"Professional Details",
 			{
@@ -68,6 +68,10 @@ class PhysicianProfileAdmin(admin.ModelAdmin):
 		),
 		("Admin", {"fields": ("admin_notes", "created_at", "updated_at")}),
 	)
+
+	@admin.display(description="Specialties")
+	def specialties_list(self, obj):
+		return ", ".join(obj.specialties.values_list("name", flat=True))
 
 	def _log_bulk_action(self, request, queryset, action):
 		selected_ids = list(queryset.values_list("id", flat=True))
