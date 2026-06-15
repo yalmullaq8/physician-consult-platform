@@ -14,8 +14,8 @@ const sourceSerif = Source_Serif_4({
 });
 
 export const metadata: Metadata = {
-  title: "Physician Consult Platform",
-  description: "Physician-to-physician consultation marketplace",
+  title: "360 Consult Platform",
+  description: "doctor-to-doctor consultations",
 };
 
 export default function RootLayout({

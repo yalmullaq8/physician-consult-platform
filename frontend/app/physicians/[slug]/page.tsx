@@ -43,25 +43,25 @@ function DrQaliProfilePage({
       title: "ORTHODONTICS",
       lines: ["Braces & Lingual", "Aligner Therapy", "Growth Modification", "Surgical Orthodontics"],
       image:
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuDgrDIqbfknfbYPMWeM7GK3uo982m6G1FRzvPAK_VhVXwStWS-Y6VV42L3gf7FfOadlrhyYioc2dQlG9xLXPYOHvpzvXRUcRoh8JlKsqfFkX7HfALeGHIH1Q9n2JS3jKb9Ga2AV5-Hj3EOVV1rnLgl7BOfCtIPdOVVlVQ2Xg7GEpS0sawrqrbi1PJbs1PBiwTLEuiSzAsjeyKUmWa3yhvv3AcZWhl9QhGHofXQq1DSE3MALBAgJN3BK-ZOyPlGhFzRaRf_kqy0MNA",
+        "/orthodontics_image.jpeg",
     },
     {
-      title: "GENERAL DENTISTRY",
-      lines: ["Scaling & Polishing", "Crowns & Implants", "Root Canal Treatment", "Pediatric Care"],
+      title: "PERIODONTICS",
+      lines: ["Gum Disease Management", "Periodontal Surgery", "Gum Grafting", "Dental Implant Therapy"],
       image:
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuDRh7U179Oa0vFehNWeqYs_ucgxLhLt2FbLYAY1qDdYjtvddSXeMGQVFXfsSMORyJAYd58RtBFx05fAO1f6zxnQhEYEz5cMuZFm59Qi70zvO3Tvge-OYcAqNrBnupEhZHcbpqRolWV8ReQCbeP41PpD7BlotI7sxD7Mnyr2jOkxYNApyToXLlkBcB-2spNLfxfMSCBhERGaLTzQlb0E7zs5hWp10JOze97SHxwDD2wRjurSQzi2mXGkJTw06LlMXCWXdGRLWg66Qw",
+        "/periodontics_resized.jpg",
     },
     {
       title: "DENTAL EDUCATION",
       lines: ["Demystifying dentistry", "Clinical workflow insights", "Patient-first communication"],
       image:
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuBr38ObplUPaYAwJ3FTqdqZwC0Nz5mzUiD-nhMXn85aLZ0sWejnxSHVl3j6EMQJ3_1ZolqzvJmdCrIN9VtgX6Fl0xCcg_JEUWK_LizcuiqRhjcvqfIsuVzIBh_foEAGXQ5Bts78RsJjKxZ_1CVHzXEWSlm3SAr9rwzp8V30b0st7qncoicJ-Jut_MI7mrASVUc8_UUKkO4A1mn5r9A5OkoBhKN6RPylbadHU44B5qTJ6mi6o7taxsxf9wR3EGw-x4rjYSQvUJJCHQ",
+        "/insta_resized.jpg",
     },
     {
       title: "OUTREACH",
       lines: ["Local oral health campaigns", "International volunteer care", "Community education"],
       image:
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuCTOzdArRrF1OK2ewZLsTxad9oFkgfEx3QniamBuVi_T5FHlHEwH_SQzQX1yHv_XVoTqgcziny76xY_5BfjyGUd41Cbzu9qOoMOql8GFDmCDiY90q5Ef3hPI7OQaMxdIsHgYNoIlBSKzbqrznVIgzNDJ_cbxTDAMcge8EJxQAkCgP-6pwsi6JCrkKwUhukGyYW9uy9M66KAeQKu4Tcy_ehgbEsQmxpcrTGRQglqF9gf7gmUBEZiagfyrWCvfqQTPGOBwWIj83kBNQ",
+        "/outreach_zoom_resize.jpg",
     },
   ];
 
@@ -81,9 +81,8 @@ function DrQaliProfilePage({
             <div className="max-w-2xl">
               <h2 className="text-4xl font-bold text-white md:text-5xl">Hello!</h2>
               <p className="mt-4 text-sm leading-relaxed text-white/95 md:text-base">
-                I&apos;m {physician.full_name} - {physician.professional_title || "dentist with advanced orthodontic training"}.
-                Whether you&apos;re here for expert clinical advice or just to explore a holistic treatment approach,
-                you&apos;re in the right place.
+                I&apos;m Dr. Mohammad Qali, a quadruple board-certified Periodontist and Orthodontist.
+                Whether you're seeking expert clinical guidance, advanced dental treatment solutions, or simply exploring a comprehensive 360° approach to oral health and smile transformation, you've come to the right place.
               </p>
               <a
                 href="https://www.instagram.com/dr_qali/"
