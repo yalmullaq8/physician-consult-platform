@@ -166,9 +166,9 @@ function DrQaliProfilePage({
                 <p className="mt-4 leading-7 text-[#1b1b1b]">
                   As a certified aligner provider, he manages interdisciplinary and complex cases while maintaining a conservative, evidence-based clinical style.
                 </p>
-                <button className="mt-5 rounded-full bg-[#1b1b1b] px-6 py-2 text-xs font-bold tracking-wide text-white uppercase">
+                {/* <button className="mt-5 rounded-full bg-[#1b1b1b] px-6 py-2 text-xs font-bold tracking-wide text-white uppercase">
                   Full Bio
-                </button>
+                </button> */}
               </div>
             </div>
           </section>
