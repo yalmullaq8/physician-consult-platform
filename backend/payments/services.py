@@ -8,6 +8,7 @@ from .models import Payment
 from .myfatoorah import (
     MyFatoorahAPIError,
     MyFatoorahConfigurationError,
+    convert_usd_to_kwd,
     create_payment_url,
     get_available_payment_methods,
     get_payment_status,
@@ -143,8 +144,11 @@ def initiate_myfatoorah_payment(booking: Booking, payment_method_id: int | None 
     # Attach the selected method for create_payment_url without schema changes.
     payment.selected_payment_method_id = payment_method_id
 
+    # Convert USD amount to KWD for MyFatoorah payment gateway
+    converted_amount_kwd = convert_usd_to_kwd(payment.amount)
+
     try:
-        created = create_payment_url(booking, payment)
+        created = create_payment_url(booking, payment, converted_amount_kwd=converted_amount_kwd)
     except MyFatoorahConfigurationError as exc:
         raise PaymentServiceError("payment_provider_not_configured", str(exc)) from exc
     except MyFatoorahAPIError as exc:

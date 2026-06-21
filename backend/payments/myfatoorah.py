@@ -66,7 +66,7 @@ def _call_myfatoorah(endpoint: str, payload: dict):
         raise MyFatoorahAPIError(str(exc)) from exc
 
 
-def create_payment_url(booking, payment):
+def create_payment_url(booking, payment, converted_amount_kwd: float | None = None):
     payment_method_id = getattr(payment, "selected_payment_method_id", None)
     effective_payment_method_id = payment_method_id or settings.MYFATOORAH_PAYMENT_METHOD_ID
 
@@ -79,13 +79,17 @@ def create_payment_url(booking, payment):
         {"bookingReference": booking.booking_reference},
     )
 
+    # Use converted amount if provided, otherwise use original amount
+    invoice_amount = converted_amount_kwd if converted_amount_kwd is not None else float(payment.amount)
+    display_currency = "KWD" if converted_amount_kwd is not None else settings.DEFAULT_CURRENCY
+
     payload = {
         "CustomerName": booking.requester_name,
-        "DisplayCurrencyIso": settings.DEFAULT_CURRENCY,
+        "DisplayCurrencyIso": display_currency,
         "MobileCountryCode": "+965",
         "CustomerMobile": booking.requester_whatsapp_number or booking.requesting_physician.phone_number or "00000000",
         "CustomerEmail": booking.requester_email,
-        "InvoiceValue": float(payment.amount),
+        "InvoiceValue": invoice_amount,
         "CallBackUrl": callback_url,
         "ErrorUrl": error_url,
         "Language": "en",
@@ -191,3 +195,30 @@ def get_payment_status(payment_id_or_invoice_id, key_type="InvoiceId"):
         "KeyType": key_type,
     }
     return _call_myfatoorah("v2/GetPaymentStatus", payload)
+
+
+def convert_usd_to_kwd(amount_usd: float) -> float:
+    """
+    Convert USD amount to KWD using MyFatoorah's exchange rate API.
+    Falls back to a hardcoded rate if the API call fails.
+    """
+    try:
+        payload = {
+            "SourceCurrencyIso": "USD",
+            "DestinationCurrencyIso": "KWD",
+            "Amount": float(amount_usd),
+        }
+        response = _call_myfatoorah("v2/ConvertCurrency", payload)
+        data = response.get("Data") or {}
+        converted_amount = data.get("ConvertedAmount")
+        
+        if converted_amount is not None:
+            return float(converted_amount)
+    except (MyFatoorahAPIError, MyFatoorahConfigurationError):
+        # Fall back to hardcoded exchange rate if API call fails
+        # Current approximate rate: 1 USD = 0.31 KWD
+        pass
+    
+    # Fallback exchange rate (update as needed)
+    FALLBACK_USD_TO_KWD_RATE = 0.31
+    return float(amount_usd) * FALLBACK_USD_TO_KWD_RATE
