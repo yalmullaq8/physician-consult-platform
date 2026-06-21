@@ -1,5 +1,6 @@
 import json
 import socket
+from decimal import Decimal, ROUND_HALF_UP
 from urllib import error, request
 from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
@@ -79,8 +80,10 @@ def create_payment_url(booking, payment, converted_amount_kwd: float | None = No
         {"bookingReference": booking.booking_reference},
     )
 
-    # Use converted amount if provided, otherwise use original amount
+    # Use converted amount if provided, otherwise use original amount.
+    # KWD uses 3 decimal places.
     invoice_amount = converted_amount_kwd if converted_amount_kwd is not None else float(payment.amount)
+    invoice_amount = float(Decimal(str(invoice_amount)).quantize(Decimal("0.001"), rounding=ROUND_HALF_UP))
     display_currency = "KWD" if converted_amount_kwd is not None else settings.DEFAULT_CURRENCY
 
     payload = {
@@ -120,10 +123,10 @@ def create_payment_url(booking, payment, converted_amount_kwd: float | None = No
 
     fallback_payload = {
         "Order": {
-            "Amount": float(payment.amount),
-            "CurrencyCode": settings.DEFAULT_CURRENCY,
+            "Amount": invoice_amount,
+            "CurrencyCode": display_currency,
         },
-        "DisplayCurrencyIso": settings.DEFAULT_CURRENCY,
+        "DisplayCurrencyIso": display_currency,
         "IntegrationUrls": {
             "Redirection": _append_query_params(
                 settings.MYFATOORAH_HOSTED_REDIRECTION_URL,
@@ -202,23 +205,41 @@ def convert_usd_to_kwd(amount_usd: float) -> float:
     Convert USD amount to KWD using MyFatoorah's exchange rate API.
     Falls back to a hardcoded rate if the API call fails.
     """
+    amount_usd_value = Decimal(str(amount_usd))
+
+    # Try direct conversion endpoint first.
     try:
         payload = {
             "SourceCurrencyIso": "USD",
             "DestinationCurrencyIso": "KWD",
-            "Amount": float(amount_usd),
+            "Amount": float(amount_usd_value),
         }
         response = _call_myfatoorah("v2/ConvertCurrency", payload)
         data = response.get("Data") or {}
-        converted_amount = data.get("ConvertedAmount")
-        
+        converted_amount = data.get("ConvertedAmount") or data.get("Amount")
         if converted_amount is not None:
-            return float(converted_amount)
-    except (MyFatoorahAPIError, MyFatoorahConfigurationError):
-        # Fall back to hardcoded exchange rate if API call fails
-        # Current approximate rate: 1 USD = 0.31 KWD
+            return float(Decimal(str(converted_amount)).quantize(Decimal("0.001"), rounding=ROUND_HALF_UP))
+    except (MyFatoorahAPIError, MyFatoorahConfigurationError, ValueError, TypeError):
         pass
-    
-    # Fallback exchange rate (update as needed)
-    FALLBACK_USD_TO_KWD_RATE = 0.31
-    return float(amount_usd) * FALLBACK_USD_TO_KWD_RATE
+
+    # Fallback to rate endpoint if ConvertCurrency is unavailable for account/region.
+    try:
+        response = _call_myfatoorah(
+            "v2/GetCurrencyRate",
+            {
+                "SourceCurrencyIso": "USD",
+                "DestinationCurrencyIso": "KWD",
+            },
+        )
+        data = response.get("Data") or {}
+        rate = data.get("Rate") or data.get("ConversionRate")
+        if rate is not None:
+            converted = amount_usd_value * Decimal(str(rate))
+            return float(converted.quantize(Decimal("0.001"), rounding=ROUND_HALF_UP))
+    except (MyFatoorahAPIError, MyFatoorahConfigurationError, ValueError, TypeError):
+        pass
+
+    # Final fallback exchange rate (update as needed).
+    fallback_rate = Decimal("0.306")
+    converted = amount_usd_value * fallback_rate
+    return float(converted.quantize(Decimal("0.001"), rounding=ROUND_HALF_UP))
