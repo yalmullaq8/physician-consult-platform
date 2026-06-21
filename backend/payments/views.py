@@ -199,4 +199,13 @@ class MyFatoorahWebhookView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
         
-        return Response({"success": True, ...})
+        return Response(
+            {
+                "success": True,
+                "data": {
+                    "booking_reference": payment.booking.booking_reference,
+                    "payment_status": payment.status,
+                    "booking_status": payment.booking.status,
+                },
+            }
+        )
