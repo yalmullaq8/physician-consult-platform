@@ -179,26 +179,24 @@ class MyFatoorahErrorView(APIView):
 
 
 class MyFatoorahWebhookView(APIView):
-	permission_classes = [permissions.AllowAny]
+    permission_classes = [permissions.AllowAny]
 
-	def post(self, request):
-		try:
-			payment = handle_myfatoorah_webhook(request.data)
-		except PaymentServiceError as exc:
-			return Response(
-				{
-					"success": False,
-					"error": {"code": exc.code, "message": exc.message},
-				},
-				status=status.HTTP_400_BAD_REQUEST,
-			)
-
-		return Response(
-			{
-				"success": True,
-				"data": {
-					"booking_reference": payment.booking.booking_reference,
-					"payment_status": payment.status,
-				},
-			}
-		)
+    def post(self, request):
+        secret_key = request.headers.get('X-Secret-Key')
+        expected_secret = settings.MYFATOORAH_WEBHOOK_SECRET
+        
+        if not expected_secret or secret_key != expected_secret:
+            return Response(
+                {"success": False, "error": {"code": "unauthorized", "message": "Invalid webhook signature"}},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+        
+        try:
+            payment = handle_myfatoorah_webhook(request.data)
+        except PaymentServiceError as exc:
+            return Response(
+                {"success": False, "error": {"code": exc.code, "message": exc.message}},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        
+        return Response({"success": True, ...})

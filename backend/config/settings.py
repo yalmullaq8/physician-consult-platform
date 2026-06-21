@@ -230,6 +230,8 @@ MYFATOORAH_ERROR_URL = os.getenv(
 )
 MYFATOORAH_REQUEST_TIMEOUT_SECONDS = int(os.getenv("MYFATOORAH_REQUEST_TIMEOUT_SECONDS", "10"))
 
+MYFATOORAH_WEBHOOK_SECRET = os.getenv('MYFATOORAH_WEBHOOK_SECRET')
+
 EMAIL_PROVIDER = os.getenv("EMAIL_PROVIDER", "smtp").strip().lower()
 RESEND_API_KEY = os.getenv("RESEND_API_KEY", "")
 RESEND_API_URL = os.getenv("RESEND_API_URL", "https://api.resend.com/emails")
